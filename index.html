@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ونوس جام — طراحی رابط کاربری</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root{
+			--bg:#F2F5F9; --surface:#FFFFFF; --surface-2:#EAEFF6; --surface-3:#DCE4EF;
+			--border:#D6DEEA; --ink:#0E1420; --ink-soft:#57647A; --ink-faint:#8996AC;
+			--accent:#003584; --accent-fill:#003584; --accent-strong:#00265F; --accent-soft:#E3EAF6;
+			--amber:#E08A2B; --amber-soft:#FCEEDC;
+			--success:#2F9E6E; --success-soft:#E4F5EC;
+			--danger:#D1554F; --danger-soft:#FBEAE9;
+			--warn:#C99423; --warn-soft:#FBF3DE;
+			--info:#3A7CC4; --info-soft:#E6F0FA;
+			--r-sm:10px; --r-md:14px; --r-lg:20px; --r-pill:999px;
+			--shadow: 0 18px 40px -18px rgba(16,26,36,.28);
+			--safe-b: 14px;
+		}
+		html[data-theme="dark"]{
+			--bg:#0A1119; --surface:#111A24; --surface-2:#17222E; --surface-3:#1E2C3A;
+			--border:#28394A; --ink:#EAF2F7; --ink-soft:#8FA3B0; --ink-faint:#5E7182;
+			--accent:#7FA6E8; --accent-fill:#2E5CA6; --accent-strong:#3E6FC0; --accent-soft:#152640;
+			--amber:#F0A94E; --amber-soft:#3A2A15;
+			--success:#4FCB93; --success-soft:#17342A;
+			--danger:#E37B76; --danger-soft:#3A1E1C;
+			--warn:#E7C158; --warn-soft:#3A2F14;
+			--info:#6BA8E0; --info-soft:#152838;
+			--shadow: 0 18px 40px -18px rgba(0,0,0,.55);
+		}
+		*{box-sizing:border-box;}
+		body{
+			margin:0; background:var(--bg); font-family:'Vazirmatn',sans-serif; color:var(--ink);
+			min-height:100vh; padding:28px 16px 60px;
+		}
+		.topbar{max-width:1180px; margin:0 auto 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+		.brand{display:flex; align-items:center; gap:10px;}
+		.brand .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent-fill),var(--accent-strong));position:relative;flex:none;}
+		.brand .mark::after{content:"";position:absolute;inset:7px;border:1.6px solid rgba(255,255,255,.75);border-radius:4px;}
+		.brand h1{font-size:16px;font-weight:800;margin:0;}
+		.brand span{font-size:12px;color:var(--ink-soft);}
+		.themebtn{border:1px solid var(--border); background:var(--surface); color:var(--ink); padding:8px 14px; border-radius:var(--r-pill); font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;}
+		.chips{max-width:1180px; margin:0 auto 26px; display:flex; gap:8px; overflow-x:auto; padding-bottom:6px;}
+		.chips button{flex:none; border:1px solid var(--border); background:var(--surface); color:var(--ink-soft); padding:9px 16px; border-radius:var(--r-pill); font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer; white-space:nowrap;}
+		.chips button.active{background:var(--accent-fill); border-color:var(--accent-fill); color:#fff;}
+		.stage{max-width:1180px;margin:0 auto;display:flex;justify-content:center;}
+		.notice{max-width:1180px;margin:0 auto 18px;font-size:12px;color:var(--ink-soft);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;line-height:1.8;}
+		.device{width:375px; background:#000; border-radius:46px; padding:12px; box-shadow:var(--shadow); position:relative;}
+		.device::before{content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:22px;background:#000;border-radius:0 0 16px 16px;z-index:5;}
+		.screenwrap{width:100%; height:780px; background:var(--surface); border-radius:36px; overflow:hidden; position:relative; display:flex; flex-direction:column;}
+		.statusbar{flex:none; height:40px; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:12px; font-weight:700; color:var(--ink);}
+		.screen{display:none; flex-direction:column; flex:1; min-height:0; overflow:hidden;}
+		.screen.active{display:flex;}
+		.appbar{flex:none; min-height:52px; display:flex; align-items:center; justify-content:space-between; padding:6px 16px; border-bottom:1px solid var(--border); gap:10px;}
+		.appbar h2{font-size:15.5px; font-weight:800; margin:0;}
+		.appbar .side{display:flex; align-items:center; gap:10px; min-width:34px;}
+		.iconbtn{width:34px;height:34px;border-radius:var(--r-pill);background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--ink); position:relative; flex:none; cursor:pointer; border:none;}
+		.badge-dot{position:absolute; top:2px; left:2px; width:8px;height:8px;border-radius:50%;background:var(--amber);border:1.5px solid var(--surface);}
+		.content{flex:1; min-height:0; overflow-y:auto; padding:16px;}
+		.icon{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+		.chev{transform:scaleX(-1);}
+		.bottomnav{flex:none; display:flex; align-items:stretch; justify-content:space-around; border-top:1px solid var(--border); background:var(--surface); padding:8px 4px calc(10px + var(--safe-b));}
+		.navitem{display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--ink-faint); font-size:10.5px; font-weight:600; flex:1; cursor:pointer;}
+		.navitem.active{color:var(--accent);}
+		.navitem .icon{width:21px;height:21px;}
+		.bottombar{flex:none; padding:12px 16px calc(14px + var(--safe-b)); border-top:1px solid var(--border); background:var(--surface);}
+
+		.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:14px; position:relative; overflow:hidden;}
+		.glass-edge::before{content:""; position:absolute; top:0; right:14%; left:14%; height:2px; border-radius:0 0 4px 4px; background:linear-gradient(90deg, transparent, var(--accent), transparent); opacity:.85;}
+		.eyebrow{font-size:11px; font-weight:700; color:var(--accent); margin:0 0 4px;}
+		h3.title{font-size:14.5px; font-weight:800; margin:0 0 3px;}
+		p.sub{font-size:12px; color:var(--ink-soft); margin:0; line-height:1.7;}
+
+		.btn{border:none; font-family:inherit; font-weight:700; border-radius:var(--r-md); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;}
+		.btn-primary{background:var(--accent-fill); color:#fff; padding:13px 18px; font-size:13.5px;}
+		.btn-amber{background:var(--amber); color:#fff; padding:13px 18px; font-size:13.5px;}
+		.btn-ghost{background:var(--surface-2); color:var(--ink); padding:11px 16px; font-size:12.5px;}
+		.btn-outline{background:transparent;border:1.4px solid var(--border); color:var(--ink); padding:11px 16px; font-size:12.5px;}
+		.btn-danger{background:var(--danger-soft); color:var(--danger); padding:13px 18px; font-size:13.5px;}
+		.btn-block{width:100%;}
+
+		.field{margin-bottom:12px;}
+		.field label{display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin-bottom:6px;}
+		.field input, .field select, .field textarea{width:100%; border:1.4px solid var(--border); background:var(--surface-2); border-radius:var(--r-sm); padding:12px 13px; font-family:inherit; font-size:13.5px; color:var(--ink);}
+		.field textarea{resize:none;}
+		.field .hint{font-size:10.5px; color:var(--ink-faint); margin-top:5px; display:flex; align-items:center; gap:4px;}
+
+		.badge{display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:var(--r-pill); font-size:10.5px; font-weight:800;}
+		.badge-success{background:var(--success-soft); color:var(--success);}
+		.badge-warn{background:var(--warn-soft); color:var(--warn);}
+		.badge-danger{background:var(--danger-soft); color:var(--danger);}
+		.badge-accent{background:var(--accent-soft); color:var(--accent);}
+		.badge-info{background:var(--info-soft); color:var(--info);}
+
+		.sectiontitle{display:flex; align-items:center; justify-content:space-between; margin:18px 0 10px;}
+		.sectiontitle:first-child{margin-top:0;}
+		.sectiontitle h3{font-size:13.5px; font-weight:800; margin:0;}
+		.sectiontitle a{font-size:11px; color:var(--accent); font-weight:700;}
+
+		.otpbox{width:44px;height:52px;border:1.6px solid var(--border);border-radius:var(--r-sm);background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;}
+
+		.steps{display:flex; align-items:center; gap:4px; margin-bottom:16px;}
+		.step-dot{flex:1; height:5px; border-radius:3px; background:var(--surface-3);}
+		.step-dot.done{background:var(--accent-fill);}
+		.step-dot.current{background:linear-gradient(90deg,var(--accent-fill),var(--surface-3) 50%);}
+
+		.timeline{position:relative; padding-right:22px;}
+		.tl-item{position:relative; padding-bottom:22px;}
+		.tl-item::before{content:"";position:absolute;right:-22px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--surface-3);border:2.5px solid var(--surface);box-shadow:0 0 0 1.5px var(--border);}
+		.tl-item.done::before{background:var(--success);box-shadow:0 0 0 1.5px var(--success);}
+		.tl-item.now::before{background:var(--accent-fill);box-shadow:0 0 0 4px var(--accent-soft);}
+		.tl-item::after{content:"";position:absolute;right:-17px;top:16px;bottom:0;width:2px;background:var(--border);}
+		.tl-item:last-child::after{display:none;}
+
+		.chatbubble{max-width:78%; padding:10px 13px; border-radius:14px; font-size:12.8px; line-height:1.7; margin-bottom:10px;}
+		.chatbubble.them{background:var(--surface-2); border:1px solid var(--border); align-self:flex-start; border-bottom-left-radius:4px;}
+		.chatbubble.me{background:var(--accent-fill); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; margin-right:auto;}
+		.chatrow{display:flex; flex-direction:column;}
+
+		.noscroll{scrollbar-width:none; -ms-overflow-style:none;}
+		.noscroll::-webkit-scrollbar{display:none; width:0; height:0;}
+
+		.illus{background:linear-gradient(160deg,var(--accent-soft),var(--surface-2)); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;}
+		.illus svg{width:78%; height:78%;}
+		.photo-img{width:100%; height:100%; object-fit:cover; display:block;}
+
+		.carousel{display:flex; gap:10px; margin:0 -16px 18px; padding:0 16px 4px;}
+		.slide{flex:none; width:250px; height:118px; border-radius:16px; position:relative; overflow:hidden;}
+		.slide .slide-info{position:absolute; right:0; bottom:0; left:0; padding:11px 13px; background:linear-gradient(0deg, rgba(0,0,0,.6), transparent);}
+		.slide .slide-info h3{color:#fff; font-size:13px; margin:0;}
+		.dots{display:flex; gap:5px; justify-content:center; margin:-10px 0 16px;}
+		.dots span{width:6px;height:6px;border-radius:50%;background:var(--surface-3);}
+		.dots span.on{background:var(--accent-fill); width:16px; border-radius:3px;}
+
+		.quickcta{display:flex; align-items:center; gap:12px; padding:12px 14px; cursor:pointer;}
+		.quickcta .qicon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex:none;color:#fff;}
+
+		.servicecard{display:flex; flex-direction:column;}
+		.servicecard .illus{height:110px; border-radius:var(--r-md) var(--r-md) 0 0;}
+		.servicecard .body{padding:12px 14px 14px; border:1px solid var(--border); border-top:none; border-radius:0 0 var(--r-md) var(--r-md);}
+		.featurelist{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 10px;}
+		.featurelist span{font-size:10.5px; font-weight:700; color:var(--ink-soft); background:var(--surface-2); padding:4px 9px; border-radius:var(--r-pill);}
+
+		.productcard{padding:0; overflow:hidden;}
+		.productcard .illus{height:88px; position:relative;}
+		.productcard .pbody{padding:9px 10px 11px;}
+		.pcat{font-size:9.5px; font-weight:700; color:var(--accent); margin-bottom:2px;}
+		.ptitle{font-size:11.5px; font-weight:700; margin-bottom:2px;}
+		.pspec{font-size:10px; color:var(--ink-soft); margin-bottom:6px;}
+		.prow{display:flex; justify-content:space-between; align-items:center;}
+		.pprice{font-size:11.5px; font-weight:800; color:var(--accent);}
+
+		.switch{width:44px;height:26px;border-radius:999px;background:var(--surface-3);position:relative;flex:none;transition:.2s;cursor:pointer;}
+		.switch.on{background:var(--accent-fill);}
+		.switch::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+		.switch.on::after{transform:translateX(-18px);}
+		.togglerow{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-bottom:1px solid var(--border);}
+		.togglerow:last-child{border-bottom:none;}
+
+		.listrow{display:flex; align-items:center; gap:12px; padding:14px; border-bottom:1px solid var(--border); cursor:pointer;}
+		.listrow:last-child{border-bottom:none;}
+
+		/* ===== Subtype cards (Wizard Step 1) ===== */
+		.subtype-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+		.subtype-card{background:var(--surface); border:1.4px solid var(--border); border-radius:var(--r-md); padding:0; overflow:hidden; cursor:pointer; position:relative; transition:border-color .15s, box-shadow .15s;}
+		.subtype-card.selected{border-color:var(--accent); border-width:1.6px; box-shadow:0 0 0 3px var(--accent-soft);}
+		.subtype-card .st-img{height:84px; display:flex; align-items:center; justify-content:center;}
+		.subtype-card .st-img svg{width:62%; height:62%;}
+		.subtype-card .st-body{padding:8px 10px 11px;}
+		.subtype-card .st-title{font-size:12px; font-weight:800; margin:0 0 3px;}
+		.subtype-card .st-desc{font-size:10.5px; color:var(--ink-soft); margin:0; line-height:1.6;}
+		.subtype-card .st-check{position:absolute; top:8px; left:8px; width:20px; height:20px; border-radius:50%; border:1.6px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; color:#fff; transition:.15s;}
+		.subtype-card.selected .st-check{background:var(--accent-fill); border-color:var(--accent-fill);}
+		.subtype-card .st-check svg{width:12px; height:12px; opacity:0; transition:.15s;}
+		.subtype-card.selected .st-check svg{opacity:1;}
+
+	/* ===== Map (Wizard Step 4) ===== */
+	.map-wrap{position:relative; height:150px; border-radius:var(--r-md); overflow:hidden; border:1.4px solid var(--border); background:var(--surface-2);}
+	.map-wrap svg{width:100%; height:100%; display:block;}
+	.map-pin{position:absolute; left:50%; top:50%; transform:translate(-50%,-100%); color:var(--accent-fill); z-index:2;}
+	.map-pin svg{width:30px; height:30px; filter:drop-shadow(0 4px 6px rgba(0,0,0,.25));}
+	.map-controls{position:absolute; left:10px; top:10px; display:flex; flex-direction:column; gap:6px; z-index:2;}
+	.map-controls .mc-btn{width:30px; height:30px; border-radius:8px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.1);}
+	.map-locator{position:absolute; right:10px; bottom:10px; width:32px; height:32px; border-radius:50%; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--accent); cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.12); z-index:2;}
+
+	/* ===== Price card (Wizard Step 5) ===== */
+	.price-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; box-shadow:0 8px 24px -12px rgba(16,26,36,.18);}
+	.price-card .pc-head{background:linear-gradient(135deg,var(--accent-fill),var(--accent-strong)); padding:16px 18px; color:#fff;}
+	.price-card .pc-head .pc-eyebrow{font-size:11px; opacity:.85; font-weight:600; margin:0;}
+	.price-card .pc-head .pc-title{font-size:16px; font-weight:800; margin:2px 0 0;}
+	.price-card .pc-body{padding:6px 18px 8px;}
+	.price-row{display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--border);}
+	.price-row:last-child{border-bottom:none;}
+	.price-row .pr-icon{width:32px; height:32px; border-radius:9px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; color:var(--accent); flex:none;}
+	.price-row .pr-icon svg{width:17px; height:17px;}
+	.price-row .pr-label{flex:1; font-size:12.5px; color:var(--ink-soft); font-weight:600;}
+	.price-row .pr-value{font-size:13px; font-weight:700; color:var(--ink);}
+	.price-card .pc-total{display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:var(--accent-soft); border-top:1px solid var(--border);}
+	.price-card .pc-total .pt-label{font-size:13px; font-weight:700; color:var(--ink-soft);}
+	.price-card .pc-total .pt-value{font-size:20px; font-weight:800; color:var(--accent);}
+	.price-card .pc-total .pt-value span{font-size:12px; font-weight:600; opacity:.7;}
+
+	/* ===== Address selector (Checkout / Wizard Location) ===== */
+	.addr-card{display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border:1.4px solid var(--border); border-radius:var(--r-md); margin-bottom:10px; cursor:pointer; background:var(--surface);}
+	.addr-card.selected{border-color:var(--accent); border-width:1.6px; background:var(--accent-soft);}
+	.addr-card .a-radio{width:20px; height:20px; border-radius:50%; border:1.6px solid var(--border); flex:none; margin-top:2px; position:relative; transition:.15s;}
+	.addr-card.selected .a-radio{border-color:var(--accent-fill); border-width:5px;}
+	.addr-card .a-body{flex:1;}
+	.addr-card .a-title{display:flex; align-items:center; gap:6px; margin-bottom:3px;}
+	.addr-card .a-title h4{font-size:12.5px; font-weight:800; margin:0;}
+	.addr-card .a-text{font-size:11.5px; color:var(--ink-soft); margin:0; line-height:1.6;}
+	.addr-add{display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border:1.4px dashed var(--border); border-radius:var(--r-md); color:var(--accent); font-size:12.5px; font-weight:700; cursor:pointer; background:transparent; width:100%;}
+
+	/* ===== Bottom Sheet ===== */
+	.sheet-overlay{position:absolute; inset:0; background:rgba(10,16,24,.45); z-index:40; display:none; align-items:flex-end; animation:fadeIn .2s ease;}
+	.sheet-overlay.open{display:flex;}
+	.sheet{width:100%; background:var(--surface); border-radius:22px 22px 0 0; max-height:85%; display:flex; flex-direction:column; animation:slideUp .28s cubic-bezier(.22,1,.36,1); box-shadow:0 -10px 30px -10px rgba(0,0,0,.25);}
+	.sheet-handle{width:38px; height:4px; border-radius:3px; background:var(--surface-3); margin:10px auto 4px; flex:none;}
+	.sheet-header{display:flex; align-items:center; justify-content:space-between; padding:6px 16px 12px; border-bottom:1px solid var(--border); gap:10px; flex:none;}
+	.sheet-header h3{font-size:15px; font-weight:800; margin:0;}
+	.sheet-body{flex:1; min-height:0; overflow-y:auto; padding:16px;}
+	.sheet-footer{flex:none; padding:12px 16px calc(14px + var(--safe-b)); border-top:1px solid var(--border); display:flex; gap:10px;}
+	@keyframes slideUp{from{transform:translateY(100%)} to{transform:translateY(0)}}
+	@keyframes fadeIn{from{opacity:0} to{opacity:1}}
+
+	/* ===== Centered Dialog ===== */
+	.dialog-overlay{position:absolute; inset:0; background:rgba(10,16,24,.5); z-index:50; display:none; align-items:center; justify-content:center; padding:24px; animation:fadeIn .2s ease;}
+	.dialog-overlay.open{display:flex;}
+	.dialog{width:100%; max-width:300px; background:var(--surface); border-radius:var(--r-lg); padding:24px 20px 18px; text-align:center; animation:popIn .25s cubic-bezier(.22,1,.36,1); box-shadow:0 20px 50px -12px rgba(0,0,0,.35);}
+	@keyframes popIn{from{transform:scale(.9); opacity:0} to{transform:scale(1); opacity:1}}
+	.dialog .d-icon{width:56px; height:56px; border-radius:50%; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;}
+	.dialog .d-icon svg{width:28px; height:28px;}
+	.dialog .d-icon.danger{background:var(--danger-soft); color:var(--danger);}
+	.dialog .d-icon.warn{background:var(--warn-soft); color:var(--warn);}
+	.dialog .d-icon.info{background:var(--info-soft); color:var(--info);}
+	.dialog .d-icon.success{background:var(--success-soft); color:var(--success);}
+	.dialog h3{font-size:16px; font-weight:800; margin:0 0 8px;}
+	.dialog p{font-size:12.5px; color:var(--ink-soft); margin:0 0 20px; line-height:1.7;}
+	.dialog .d-actions{display:flex; gap:10px;}
+	.dialog .d-actions .btn{flex:1;}
+
+	/* ===== Toasts ===== */
+	.toast-container{position:absolute; top:8px; left:0; right:0; z-index:60; display:flex; flex-direction:column; align-items:center; gap:8px; padding:0 12px; pointer-events:none;}
+	.toast{width:100%; max-width:330px; background:var(--surface); border-radius:var(--r-md); padding:12px 14px; display:flex; align-items:flex-start; gap:10px; box-shadow:0 10px 30px -8px rgba(0,0,0,.28); border:1px solid var(--border); animation:toastIn .3s cubic-bezier(.22,1,.36,1); pointer-events:auto;}
+	@keyframes toastIn{from{transform:translateY(-20px); opacity:0} to{transform:translateY(0); opacity:1}}
+	@keyframes toastOut{to{transform:translateY(-20px); opacity:0}}
+	.toast.out{animation:toastOut .25s ease forwards;}
+	.toast .t-icon{width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex:none;}
+	.toast .t-icon svg{width:18px; height:18px;}
+	.toast.success .t-icon{background:var(--success-soft); color:var(--success);}
+	.toast.warning .t-icon{background:var(--warn-soft); color:var(--warn);}
+	.toast.error .t-icon{background:var(--danger-soft); color:var(--danger);}
+	.toast.info .t-icon{background:var(--info-soft); color:var(--info);}
+	.toast .t-body{flex:1; min-width:0;}
+	.toast .t-title{font-size:12.5px; font-weight:800; margin:0 0 2px;}
+	.toast .t-msg{font-size:11.5px; color:var(--ink-soft); margin:0; line-height:1.6;}
+	.toast .t-close{color:var(--ink-faint); cursor:pointer; flex:none; padding:2px;}
+	.toast .t-close svg{width:15px; height:15px;}
+	.toast.success{border-right:3px solid var(--success);}
+	.toast.warning{border-right:3px solid var(--warn);}
+	.toast.error{border-right:3px solid var(--danger);}
+	.toast.info{border-right:3px solid var(--info);}
+
+	/* ===== Components demo grid ===== */
+	.demo-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+	.demo-btn{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:16px 10px; border:1.4px solid var(--border); border-radius:var(--r-md); background:var(--surface); cursor:pointer; font-size:11.5px; font-weight:700; color:var(--ink);}
+	.demo-btn .d-ic{width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center;}
+	.demo-btn .d-ic svg{width:19px; height:19px;}
+	.demo-btn .d-ic.success{background:var(--success-soft); color:var(--success);}
+	.demo-btn .d-ic.warning{background:var(--warn-soft); color:var(--warn);}
+	.demo-btn .d-ic.error{background:var(--danger-soft); color:var(--danger);}
+	.demo-btn .d-ic.info{background:var(--info-soft); color:var(--info);}
+	.demo-btn .d-ic.accent{background:var(--accent-soft); color:var(--accent);}
+
+		@media (max-width:420px){.stage{padding:0 4px;}}
+	</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+	<defs>
+		<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9h5v-6h2v6h5v-9"/></symbol>
+		<symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+		<symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+		<symbol id="i-orders" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></symbol>
+		<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 20c1.2-3.8 4-5.6 7-5.6s5.8 1.8 7 5.6"/></symbol>
+		<symbol id="i-back" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+		<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M20 20l-4.8-4.8"/></symbol>
+		<symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.2 11h10.6L20 8H6.4"/></symbol>
+		<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 10a6 6 0 0 1 12 0c0 5 1.5 6 1.5 6h-15S6 15 6 10Z"/><path d="M10 19a2 2 0 0 0 4 0"/></symbol>
+		<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+		<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+		<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
+		<symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-5 4 4 3-3 4 4"/></symbol>
+		<symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+		<symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 3 10.5l7 2.5m11-10L14 21l-2.5-8"/></symbol>
+		<symbol id="i-clip" viewBox="0 0 24 24"><path d="M8 12.5V7a4 4 0 0 1 8 0v9a2.5 2.5 0 0 1-5 0V8.5"/></symbol>
+		<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 10l6.1-.9 2.7-5.6Z"/></symbol>
+		<symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16M8 12h8M11 18h2"/></symbol>
+		<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.6 7-11.5A7 7 0 0 0 5 9.5C5 14.4 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></symbol>
+		<symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M14 8l4 4-4 4M18 12H9"/></symbol>
+		<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-9.5-9.3C1.2 7.6 3 4.5 6.3 4.5c2 0 3.4 1.1 4.2 2.4.8-1.3 2.2-2.4 4.2-2.4 3.3 0 5.1 3.1 3.8 6.2C19.5 15.4 12 20 12 20Z"/></symbol>
+		<symbol id="i-heartfill" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-9.5-9.3C1.2 7.6 3 4.5 6.3 4.5c2 0 3.4 1.1 4.2 2.4.8-1.3 2.2-2.4 4.2-2.4 3.3 0 5.1 3.1 3.8 6.2C19.5 15.4 12 20 12 20Z" fill="currentColor" stroke="none"/></symbol>
+		<symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4Z"/><circle cx="12" cy="13.5" r="3.4"/></symbol>
+		<symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 4 6v14l5-2 6 2 5-2V4l-5 2-6-2Z"/><path d="M9 4v14M15 6v14"/></symbol>
+		<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+		<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17.5v.5"/><circle cx="12" cy="17.5" r=".5" fill="currentColor"/></symbol>
+		<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/><circle cx="12" cy="8" r=".5" fill="currentColor"/></symbol>
+		<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+		<symbol id="i-glass" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M5 12h14"/></symbol>
+		<symbol id="i-tools" viewBox="0 0 24 24"><path d="M14 7a4 4 0 0 1-5 5L5 16l3 3 4-4a4 4 0 0 1 5-5l-3 3-2-2 2-3Z"/></symbol>
+		<symbol id="i-truck" viewBox="0 0 24 24"><rect x="3" y="7" width="11" height="9" rx="1"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/></symbol>
+		<symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/></symbol>
+		<symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+
+		<symbol id="il-balcony" viewBox="0 0 100 80">
+			<circle cx="80" cy="14" r="7" fill="var(--amber)" opacity=".55"/>
+			<rect x="58" y="6" width="30" height="74" fill="var(--accent)" opacity=".18"/>
+			<rect x="6" y="52" width="82" height="8" fill="var(--accent)" opacity=".35"/>
+			<rect x="10" y="20" width="14" height="32" rx="1.5" fill="var(--accent)" opacity=".22" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="26" y="20" width="14" height="32" rx="1.5" fill="var(--accent)" opacity=".3" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="42" y="20" width="14" height="32" rx="1.5" fill="var(--accent)" opacity=".22" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="8" y="17" width="50" height="4" rx="2" fill="var(--accent-strong)"/>
+			<path d="M8 60h82" stroke="var(--accent-strong)" stroke-width="2"/>
+		</symbol>
+		<symbol id="il-shower" viewBox="0 0 100 80">
+			<path d="M30 8h34" stroke="var(--accent-strong)" stroke-width="3" stroke-linecap="round"/>
+			<circle cx="30" cy="8" r="3" fill="var(--accent-strong)"/>
+			<path d="M30 11c0 4 4 6 6 10" stroke="var(--accent)" stroke-width="2" fill="none"/>
+			<path d="M33 24l-2 6M40 24l-2 8M47 24l-2 6" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" opacity=".65"/>
+			<rect x="16" y="34" width="46" height="42" rx="2" fill="var(--accent)" opacity=".16" stroke="var(--accent)" stroke-width="1.8"/>
+			<path d="M39 34v42" stroke="var(--accent)" stroke-width="1.8"/>
+			<circle cx="34" cy="55" r="1.8" fill="var(--accent-strong)"/>
+			<rect x="16" y="74" width="46" height="3" fill="var(--accent-strong)"/>
+		</symbol>
+		<symbol id="il-partition" viewBox="0 0 100 80">
+			<rect x="14" y="14" width="30" height="54" rx="2" fill="var(--accent)" opacity=".16" stroke="var(--accent)" stroke-width="1.8"/>
+			<rect x="50" y="14" width="30" height="54" rx="2" fill="var(--accent)" opacity=".22" stroke="var(--accent)" stroke-width="1.8"/>
+			<rect x="12" y="66" width="70" height="4" fill="var(--accent-strong)"/>
+			<path d="M14 34h30M50 40h30" stroke="var(--accent-strong)" stroke-width="1.4" opacity=".5"/>
+			<circle cx="86" cy="60" r="6" fill="var(--success)" opacity=".55"/>
+			<rect x="83" y="60" width="6" height="16" fill="var(--success)" opacity=".5"/>
+		</symbol>
+		<symbol id="il-hardware" viewBox="0 0 100 80">
+			<rect x="14" y="30" width="60" height="18" rx="4" fill="var(--accent)" opacity=".2" stroke="var(--accent)" stroke-width="1.8"/>
+			<circle cx="24" cy="39" r="3" fill="var(--accent-strong)"/>
+			<circle cx="64" cy="39" r="3" fill="var(--accent-strong)"/>
+			<path d="M78 20 88 30l-8 8-4-4 4-4-4-4Z" fill="var(--amber)" opacity=".7"/>
+			<path d="M20 58c0-4 4-6 8-6s8 2 8 6" stroke="var(--accent-strong)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+		</symbol>
+		<symbol id="il-handle" viewBox="0 0 100 80">
+			<rect x="20" y="18" width="10" height="44" rx="3" fill="var(--accent)" opacity=".28" stroke="var(--accent)" stroke-width="1.8"/>
+			<rect x="30" y="18" width="46" height="10" rx="3" fill="var(--accent)" opacity=".2" stroke="var(--accent)" stroke-width="1.8"/>
+			<rect x="30" y="52" width="46" height="10" rx="3" fill="var(--accent)" opacity=".2" stroke="var(--accent)" stroke-width="1.8"/>
+		</symbol>
+		<symbol id="il-rail" viewBox="0 0 100 80">
+			<rect x="10" y="36" width="80" height="8" rx="3" fill="var(--accent)" opacity=".25" stroke="var(--accent)" stroke-width="1.6"/>
+			<circle cx="30" cy="40" r="5" fill="var(--accent-strong)"/>
+			<circle cx="60" cy="40" r="5" fill="var(--accent-strong)"/>
+			<rect x="16" y="20" width="30" height="14" rx="2" fill="var(--accent)" opacity=".14" stroke="var(--accent)" stroke-width="1.4"/>
+			<rect x="50" y="20" width="30" height="14" rx="2" fill="var(--accent)" opacity=".14" stroke="var(--accent)" stroke-width="1.4"/>
+		</symbol>
+		<symbol id="il-lock" viewBox="0 0 100 80">
+			<circle cx="50" cy="40" r="16" fill="var(--accent)" opacity=".18" stroke="var(--accent)" stroke-width="1.8"/>
+			<rect x="46" y="40" width="26" height="6" rx="3" fill="var(--accent-strong)"/>
+			<circle cx="50" cy="40" r="4" fill="var(--accent-strong)"/>
+		</symbol>
+		<symbol id="il-rubber" viewBox="0 0 100 80">
+			<path d="M12 40q10-16 20 0t20 0 20 0 20 0" stroke="var(--accent)" stroke-width="4" fill="none" stroke-linecap="round" opacity=".55"/>
+			<path d="M12 50q10-16 20 0t20 0 20 0 20 0" stroke="var(--accent-strong)" stroke-width="4" fill="none" stroke-linecap="round" opacity=".35"/>
+		</symbol>
+
+		<!-- Subtype illustrations -->
+		<symbol id="il-sub-transparent" viewBox="0 0 100 80">
+			<rect x="12" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".1" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="38" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".1" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="64" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".1" stroke="var(--accent)" stroke-width="1.6"/>
+			<path d="M18 20l-4 6M28 30l-6 8M48 22l-4 6M58 40l-6 8M74 24l-4 6M82 36l-6 8" stroke="var(--accent)" stroke-width="1.3" opacity=".35" stroke-linecap="round"/>
+			<rect x="10" y="70" width="78" height="4" rx="1.5" fill="var(--accent-strong)"/>
+		</symbol>
+		<symbol id="il-sub-frosted" viewBox="0 0 100 80">
+			<rect x="12" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".25" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="38" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".25" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="64" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".25" stroke="var(--accent)" stroke-width="1.6"/>
+			<circle cx="20" cy="22" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="28" cy="30" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="16" cy="40" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="24" cy="52" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="46" cy="24" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="52" cy="38" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="44" cy="54" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="72" cy="22" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="80" cy="36" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<circle cx="70" cy="52" r="1.2" fill="var(--accent)" opacity=".5"/>
+			<rect x="10" y="70" width="78" height="4" rx="1.5" fill="var(--accent-strong)"/>
+		</symbol>
+		<symbol id="il-sub-smoked" viewBox="0 0 100 80">
+			<rect x="12" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".5" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="38" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".5" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="64" y="10" width="22" height="60" rx="2" fill="var(--accent)" opacity=".5" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="10" y="70" width="78" height="4" rx="1.5" fill="var(--accent-strong)"/>
+		</symbol>
+		<symbol id="il-sub-mirror" viewBox="0 0 100 80">
+			<defs>
+				<linearGradient id="mirrorGrad" x1="0" y1="0" x2="1" y2="1">
+					<stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/>
+					<stop offset=".5" stop-color="var(--accent)" stop-opacity=".12"/>
+					<stop offset="1" stop-color="var(--accent)" stop-opacity=".3"/>
+				</linearGradient>
+			</defs>
+			<rect x="12" y="10" width="22" height="60" rx="2" fill="url(#mirrorGrad)" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="38" y="10" width="22" height="60" rx="2" fill="url(#mirrorGrad)" stroke="var(--accent)" stroke-width="1.6"/>
+			<rect x="64" y="10" width="22" height="60" rx="2" fill="url(#mirrorGrad)" stroke="var(--accent)" stroke-width="1.6"/>
+			<path d="M16 14l8 8M42 14l8 8M68 14l8 8" stroke="#fff" stroke-width="1.5" opacity=".5" stroke-linecap="round"/>
+			<rect x="10" y="70" width="78" height="4" rx="1.5" fill="var(--accent-strong)"/>
+		</symbol>
+	</defs>
+</svg>
+
+<div class="topbar">
+	<div class="brand">
+		<div class="mark"></div>
+		<div>
+			<h1>ونوس جام — سیستم طراحی و صفحات</h1>
+			<span>اپلیکیشن سفارش شیشه و آلومینیوم اختصاصی + فروشگاه لوازم</span>
+		</div>
+	</div>
+	<button class="themebtn" onclick="toggleTheme()" id="themeBtnLabel">حالت تیره</button>
+</div>
+
+<div class="notice">نسخه پنجم: تصاویر واقعی پروژه جایگزین تصویرسازی SVG شدند — services/image.png در کاروسل، کارت خدمات، صفحه جزئیات، تصاویر آپلود و زیرنوع‌های ویزارد (با فیلتر CSS برای شفاف/مات/دودی/آینه‌ای) و چت پشتیبانی؛ store/image.png در محصولات فروشگاه، کارت‌های سبد خرید و صفحه جزئیات محصول.</div>
+
+<div class="chips" id="chips"></div>
+
+<div class="stage">
+	<div class="device">
+		<div class="screenwrap">
+
+			<div class="statusbar">
+				<div class="icons">
+					<svg class="icon" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 16 0"/><path d="M8 14a4 4 0 0 1 8 0"/><circle cx="12" cy="17" r="1.2" fill="currentColor" stroke="none"/></svg>
+				</div>
+				<span>۹:۴۱</span>
+				<div class="icons"><span style="font-size:11px">۱۰۰٪</span></div>
+			</div>
+
+			<!-- SPLASH -->
+			<div class="screen active" id="screen-splash">
+				<div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;">
+					<div style="width:84px;height:84px;border-radius:22px;background:linear-gradient(135deg,var(--accent-fill),var(--accent-strong));position:relative;box-shadow:var(--shadow)">
+						<div style="position:absolute;inset:16px;border:2px solid rgba(255,255,255,.8);border-radius:8px"></div>
+					</div>
+					<div>
+						<div style="font-size:22px;font-weight:800">ونوس جام</div>
+						<div style="font-size:12.5px;color:var(--ink-soft);margin-top:6px">شیشه و آلومینیوم، دقیق و شفاف</div>
+					</div>
+					<div style="display:flex;gap:6px;margin-top:10px">
+						<div style="width:7px;height:7px;border-radius:50%;background:var(--accent-fill)"></div>
+						<div style="width:7px;height:7px;border-radius:50%;background:var(--surface-3)"></div>
+						<div style="width:7px;height:7px;border-radius:50%;background:var(--surface-3)"></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- LOGIN -->
+			<div class="screen" id="screen-login">
+				<div class="appbar"><div class="side"></div><h2>ورود</h2><div class="side"></div></div>
+				<div class="content">
+					<div style="text-align:center;margin:10px 0 26px">
+						<div style="width:56px;height:56px;margin:0 auto 14px;border-radius:16px;background:linear-gradient(135deg,var(--accent-fill),var(--accent-strong))"></div>
+						<h3 class="title" style="font-size:17px">به ونوس جام خوش آمدید</h3>
+						<p class="sub">برای ورود یا ثبت‌نام، شماره موبایل خود را وارد کنید</p>
+					</div>
+					<div class="field"><label>شماره موبایل</label><input type="text" placeholder="۰۹۱۲ ۰۰۰ ۰۰۰۰" style="text-align:left;direction:ltr"></div>
+					<button class="btn btn-primary btn-block" onclick="showScreen('otp')">دریافت کد تایید</button>
+					<p style="font-size:11px;color:var(--ink-faint);text-align:center;margin-top:16px;line-height:1.9">ورود شما به منزله پذیرش <span style="color:var(--accent);font-weight:700">قوانین و مقررات</span> ونوس جام است</p>
+				</div>
+			</div>
+
+			<!-- OTP -->
+			<div class="screen" id="screen-otp">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('login')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>کد تایید</h2><div class="side"></div></div>
+				<div class="content">
+					<p class="sub" style="margin:6px 0 20px">کد ۴ رقمی ارسال شده به شماره <span style="direction:ltr;display:inline-block;font-weight:700;color:var(--ink)">۰۹۱۲۰۰۰۰۰۰۰</span> را وارد کنید</p>
+					<div style="display:flex;gap:10px;justify-content:center;direction:ltr;margin-bottom:16px">
+						<div class="otpbox">۴</div><div class="otpbox">۲</div><div class="otpbox">۸</div><div class="otpbox" style="border-color:var(--accent)"></div>
+					</div>
+					<p style="font-size:11.5px;color:var(--accent);text-align:center;font-weight:700;margin-bottom:26px">ارسال مجدد کد تا ۰۰:۴۵</p>
+					<button class="btn btn-primary btn-block" onclick="showScreen('register')">تایید و ادامه</button>
+					<button class="btn btn-ghost btn-block" style="margin-top:10px">ویرایش شماره موبایل</button>
+				</div>
+			</div>
+
+			<!-- REGISTER -->
+			<div class="screen" id="screen-register">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('otp')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>تکمیل ثبت‌نام</h2><div class="side"></div></div>
+				<div class="content">
+					<p class="sub" style="margin:6px 0 18px">برای تکمیل حساب کاربری، اطلاعات زیر را وارد کنید</p>
+					<div class="field"><label>نام و نام خانوادگی</label><input type="text" placeholder="مثلاً علی محمدی"></div>
+					<div class="field"><label>شهر</label><input type="text" placeholder="مثلاً تهران"></div>
+					<div class="field">
+						<label>نوع کاربری</label>
+						<div style="display:flex;gap:8px">
+							<div style="flex:1;border:1.6px solid var(--accent);background:var(--accent-soft);border-radius:var(--r-sm);padding:12px;text-align:center;font-size:12.5px;font-weight:700;color:var(--accent)">مشتری</div>
+							<div style="flex:1;border:1.4px solid var(--border);border-radius:var(--r-sm);padding:12px;text-align:center;font-size:12.5px;font-weight:700;color:var(--ink-soft)">همکار تجاری</div>
+						</div>
+					</div>
+				</div>
+				<div class="bottombar"><button class="btn btn-primary btn-block" onclick="showScreen('home')">ورود به ونوس جام</button></div>
+			</div>
+
+			<!-- HOME -->
+			<div class="screen" id="screen-home">
+				<div class="appbar">
+					<div class="side"><div class="iconbtn"><svg class="icon"><use href="#i-bell"/></svg><span class="badge-dot"></span></div></div>
+					<h2>سلام، علی</h2>
+					<div class="side"><div class="iconbtn" onclick="showScreen('cart')"><svg class="icon"><use href="#i-cart"/></svg></div></div>
+				</div>
+				<div class="content">
+					<div class="carousel noscroll" style="overflow-x:auto">
+						<div class="slide" style="position:relative"><img src="/images/services/image.png" class="photo-img" alt="شیشه بالکن ریلی"><div class="slide-info"><h3>شیشه بالکن ریلی</h3></div></div>
+						<div class="slide illus" style="background:linear-gradient(135deg,#003584,#3A63AE)"><svg viewBox="0 0 100 80" style="width:60%;height:60%;opacity:.9"><use href="#il-shower"/></svg><div class="slide-info"><h3>کابین دوش</h3></div></div>
+						<div class="slide illus" style="background:linear-gradient(135deg,#123A6E,#3E6FC0)"><svg viewBox="0 0 100 80" style="width:60%;height:60%;opacity:.9"><use href="#il-partition"/></svg><div class="slide-info"><h3>پارتیشن شیشه‌ای</h3></div></div>
+						<div class="slide illus" style="background:linear-gradient(135deg,#1B2E4D,#4A6FA5)"><svg viewBox="0 0 100 80" style="width:60%;height:60%;opacity:.9"><use href="#il-hardware"/></svg><div class="slide-info"><h3>سایر خدمات</h3></div></div>
+					</div>
+					<div class="dots"><span class="on"></span><span></span><span></span><span></span></div>
+
+					<div class="card quickcta" style="background:linear-gradient(120deg,var(--accent-fill),var(--accent-strong));margin-bottom:4px" onclick="showScreen('wizardSelect')">
+						<div class="qicon"><svg class="icon" style="color:#fff;width:22px;height:22px"><use href="#i-plus"/></svg></div>
+						<div style="flex:1">
+							<h3 class="title" style="color:#fff;font-size:13px">سفارش شیشه اختصاصی</h3>
+							<p class="sub" style="color:#DCE6F5">بالکن، کابین حمام، پارتیشن</p>
+						</div>
+						<svg class="icon chev" style="color:#fff;width:16px;height:16px"><use href="#i-back"/></svg>
+					</div>
+
+					<div class="sectiontitle"><h3>خدمات اصلی</h3><a onclick="showScreen('services')" style="cursor:pointer">مشاهده همه</a></div>
+					<div class="noscroll" style="display:flex;gap:10px;overflow-x:auto;margin:0 -16px 4px;padding:0 16px 4px">
+						<div class="card" style="flex:none;width:132px;padding:0;overflow:hidden" onclick="showScreen('serviceDetail')">
+							<div class="illus" style="height:76px"><img src="/images/services/image.png" class="photo-img" alt="بالکن ریلی"></div>
+							<div style="padding:9px 10px"><div style="font-size:11.5px;font-weight:700">بالکن ریلی</div></div>
+						</div>
+						<div class="card" style="flex:none;width:132px;padding:0;overflow:hidden">
+							<div class="illus" style="height:76px"><svg viewBox="0 0 100 80"><use href="#il-shower"/></svg></div>
+							<div style="padding:9px 10px"><div style="font-size:11.5px;font-weight:700">کابین حمام</div></div>
+						</div>
+						<div class="card" style="flex:none;width:132px;padding:0;overflow:hidden">
+							<div class="illus" style="height:76px"><svg viewBox="0 0 100 80"><use href="#il-partition"/></svg></div>
+							<div style="padding:9px 10px"><div style="font-size:11.5px;font-weight:700">پارتیشن</div></div>
+						</div>
+					</div>
+
+					<div class="sectiontitle"><h3>سفارش‌های فعال</h3><a onclick="showScreen('orderDetail')" style="cursor:pointer">جزئیات</a></div>
+					<div class="card glass-edge" onclick="showScreen('orderDetail')">
+						<div style="display:flex;justify-content:space-between;align-items:flex-start">
+							<div><h3 class="title">بالکن ریلی — سفارش #۱۲۴۸</h3><p class="sub">مرحله: در حال تولید</p></div>
+							<span class="badge badge-accent">در تولید</span>
+						</div>
+					</div>
+
+					<div class="sectiontitle"><h3>محصولات پیشنهادی</h3><a onclick="showScreen('store')" style="cursor:pointer">فروشگاه</a></div>
+					<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+						<div class="card productcard" onclick="showScreen('productDetail')">
+							<div class="illus"><img src="/images/store/image.png" class="photo-img" alt="دستگیره آلومینیومی"></div>
+							<div class="pbody"><div class="pcat">یراق‌آلات</div><div class="ptitle">دستگیره آلومینیومی</div><div class="pspec">آنودایز · ۲۵ سانتی‌متر</div><div class="prow"><span class="pprice">۴۵۰,۰۰۰ ت</span></div></div>
+						</div>
+						<div class="card productcard">
+							<div class="illus"><img src="/images/store/image.png" class="photo-img" alt="ریل کشویی" style="object-position:center;filter:brightness(.92) saturate(.85)"></div>
+							<div class="pbody"><div class="pcat">یراق‌آلات</div><div class="ptitle">ریل کشویی استاندارد</div><div class="pspec">فولاد ضدزنگ</div><div class="prow"><span class="pprice">۱,۲۰۰,۰۰۰ ت</span></div></div>
+						</div>
+					</div>
+
+					<div class="sectiontitle"><h3>آخرین تخفیف‌ها</h3></div>
+					<div class="card" style="background:var(--amber-soft);border-color:transparent">
+						<p style="font-size:12.5px;font-weight:700;margin:0;color:#8a5311">۱۵٪ تخفیف نصب برای سفارش‌های بالکن ریلی تا پایان هفته</p>
+					</div>
+				</div>
+				<div class="bottomnav">
+					<div class="navitem active"><svg class="icon"><use href="#i-home"/></svg>خانه</div>
+					<div class="navitem" onclick="showScreen('services')"><svg class="icon"><use href="#i-grid"/></svg>خدمات</div>
+					<div class="navitem" onclick="showScreen('store')"><svg class="icon"><use href="#i-bag"/></svg>فروشگاه</div>
+					<div class="navitem" onclick="showScreen('orders')"><svg class="icon"><use href="#i-orders"/></svg>سفارش‌ها</div>
+					<div class="navitem" onclick="showScreen('profile')"><svg class="icon"><use href="#i-user"/></svg>پروفایل</div>
+				</div>
+			</div>
+
+			<!-- SERVICES -->
+			<div class="screen" id="screen-services">
+				<div class="appbar"><div class="side"></div><h2>خدمات</h2><div class="side"><div class="iconbtn" onclick="showScreen('cart')"><svg class="icon"><use href="#i-cart"/></svg></div></div></div>
+				<div class="content">
+					<p class="sub" style="margin-bottom:14px">خدمات سفارشی‌سازی شیشه و آلومینیوم را انتخاب کنید</p>
+					<div style="display:flex;flex-direction:column;gap:14px">
+						<div class="servicecard">
+							<div class="illus" style="height:130px"><img src="/images/services/image.png" class="photo-img" alt="بالکن شیشه‌ای ریلی"></div>
+							<div class="body">
+								<h3 class="title">بالکن شیشه‌ای ریلی</h3>
+								<p class="sub">سیستم کشویی بدون فریم با شیشه سکوریت و ریل آلومینیومی مقاوم</p>
+								<div class="featurelist"><span>عایق صدا</span><span>ضدآب</span><span>گارانتی ۵ سال</span></div>
+								<button class="btn btn-outline btn-block" onclick="showScreen('serviceDetail')">مشاهده و سفارش</button>
+							</div>
+						</div>
+						<div class="servicecard">
+							<div class="illus"><svg viewBox="0 0 100 80"><use href="#il-shower"/></svg></div>
+							<div class="body">
+								<h3 class="title">کابین حمام</h3>
+								<p class="sub">طراحی اختصاصی بر اساس متراژ سرویس بهداشتی شما</p>
+								<div class="featurelist"><span>شیشه سکوریت</span><span>یراق ضدزنگ</span></div>
+								<button class="btn btn-outline btn-block" onclick="showScreen('wizardSelect')">مشاهده و سفارش</button>
+							</div>
+						</div>
+						<div class="servicecard">
+							<div class="illus"><svg viewBox="0 0 100 80"><use href="#il-partition"/></svg></div>
+							<div class="body">
+								<h3 class="title">پارتیشن شیشه‌ای</h3>
+								<p class="sub">مناسب فضای اداری و مسکونی با اجرای سریع</p>
+								<div class="featurelist"><span>نصب سریع</span><span>طرح متنوع</span></div>
+								<button class="btn btn-outline btn-block" onclick="showScreen('wizardSelect')">مشاهده و سفارش</button>
+							</div>
+						</div>
+						<div class="servicecard" style="opacity:.65">
+							<div class="illus"><svg viewBox="0 0 100 80"><use href="#il-hardware"/></svg></div>
+							<div class="body"><h3 class="title">سایر خدمات</h3><p class="sub">خدمات جدید به‌زودی اضافه می‌شود</p></div>
+						</div>
+					</div>
+				</div>
+				<div class="bottomnav">
+					<div class="navitem" onclick="showScreen('home')"><svg class="icon"><use href="#i-home"/></svg>خانه</div>
+					<div class="navitem active"><svg class="icon"><use href="#i-grid"/></svg>خدمات</div>
+					<div class="navitem" onclick="showScreen('store')"><svg class="icon"><use href="#i-bag"/></svg>فروشگاه</div>
+					<div class="navitem" onclick="showScreen('orders')"><svg class="icon"><use href="#i-orders"/></svg>سفارش‌ها</div>
+					<div class="navitem" onclick="showScreen('profile')"><svg class="icon"><use href="#i-user"/></svg>پروفایل</div>
+				</div>
+			</div>
+
+			<!-- SERVICE DETAIL -->
+			<div class="screen" id="screen-serviceDetail">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('services')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>بالکن شیشه‌ای ریلی</h2><div class="side"><div class="iconbtn"><svg class="icon"><use href="#i-star"/></svg></div></div></div>
+				<div class="content" style="padding-top:0">
+					<div style="height:170px;margin:0 -16px 14px;overflow:hidden;position:relative">
+						<img src="/images/services/image.png" style="width:100%;height:100%;object-fit:cover;display:block;" alt="بالکن شیشه‌ای ریلی">
+						<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35) 0%,transparent 60%)"></div>
+					</div>
+					<h3 class="title" style="font-size:16px">بالکن شیشه‌ای ریلی</h3>
+					<p class="sub" style="margin:6px 0 16px">سیستم کشویی بدون فریم برای بالکن‌ها، با شیشه‌های سکوریت و ریل آلومینیومی مقاوم در برابر آب و باد.</p>
+					<div class="sectiontitle"><h3>مزایا</h3></div>
+					<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+						<div style="display:flex;gap:8px;align-items:center;font-size:12.5px"><span style="color:var(--success)"><svg class="icon" style="width:16px;height:16px"><use href="#i-check"/></svg></span>عایق صدا و حرارت</div>
+						<div style="display:flex;gap:8px;align-items:center;font-size:12.5px"><span style="color:var(--success)"><svg class="icon" style="width:16px;height:16px"><use href="#i-check"/></svg></span>جمع‌شوندگی کامل و بدون مانع دید</div>
+						<div style="display:flex;gap:8px;align-items:center;font-size:12.5px"><span style="color:var(--success)"><svg class="icon" style="width:16px;height:16px"><use href="#i-check"/></svg></span>گارانتی ۵ ساله ریل و یراق</div>
+					</div>
+					<div class="sectiontitle"><h3>گالری تصاویر</h3></div>
+					<div class="noscroll" style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto">
+						<div class="illus" style="width:64px;height:64px;border-radius:10px;flex:none"><img src="/images/services/image.png" class="photo-img" alt="گالری ۱"></div>
+						<div class="illus" style="width:64px;height:64px;border-radius:10px;flex:none"><img src="/images/services/image.png" class="photo-img" alt="گالری ۲" style="object-position:right center"></div>
+						<div class="illus" style="width:64px;height:64px;border-radius:10px;flex:none"><img src="/images/services/image.png" class="photo-img" alt="گالری ۳" style="object-position:left bottom"></div>
+						<div style="width:64px;height:64px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-soft);font-weight:700;flex:none">۱۲+</div>
+					</div>
+					<div class="sectiontitle"><h3>پروژه‌های قبلی</h3></div>
+					<div class="card" style="margin-bottom:16px">
+						<div style="display:flex;gap:10px;align-items:center">
+							<div class="illus" style="width:44px;height:44px;border-radius:8px;flex:none"><img src="/images/services/image.png" class="photo-img" alt="پروژه مسکونی"></div>
+							<div><h3 class="title" style="font-size:12.5px">پروژه مسکونی، سعادت‌آباد</h3><p class="sub">۲۴ متر مربع — تحویل خرداد ۱۴۰۴</p></div>
+						</div>
+					</div>
+					<div class="sectiontitle"><h3>سوالات متداول</h3></div>
+					<div class="card" style="margin-bottom:10px"><h3 class="title" style="font-size:12.5px">آیا نصب رایگان است؟</h3><p class="sub">هزینه نصب جدا از قیمت محصول محاسبه و در پیش‌فاکتور نمایش داده می‌شود.</p></div>
+					<div class="card" style="margin-bottom:6px"><h3 class="title" style="font-size:12.5px">زمان تحویل چقدر است؟</h3><p class="sub">به‌طور معمول بین ۱۰ تا ۱۵ روز کاری پس از تایید سفارش.</p></div>
+				</div>
+				<div class="bottombar"><button class="btn btn-primary btn-block" onclick="showScreen('wizardSelect')">شروع سفارش</button></div>
+			</div>
+
+			<!-- WIZARD STEP 1: SELECT SUBTYPE -->
+			<div class="screen" id="screen-wizardSelect">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('serviceDetail')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>سفارش جدید</h2><div class="side"></div></div>
+				<div class="content">
+					<div class="steps"><div class="step-dot current"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+					<p class="eyebrow">مرحله ۱ از ۶</p>
+					<h3 class="title" style="font-size:16px;margin-bottom:4px">نوع شیشه بالکن را انتخاب کنید</h3>
+					<p class="sub" style="margin-bottom:16px">خدمت انتخابی: بالکن شیشه‌ای ریلی</p>
+					<div class="subtype-grid">
+						<div class="subtype-card selected" onclick="selectSubtype(this)">
+							<div class="st-check"><svg class="icon"><use href="#i-check"/></svg></div>
+							<div class="st-img" style="overflow:hidden"><img src="/images/services/image.png" class="photo-img" alt="شیشه شفاف" style="filter:brightness(1.05) saturate(1.1)"></div>
+							<div class="st-body">
+								<h4 class="st-title">شیشه شفاف</h4>
+								<p class="st-desc">دید کامل، بیشترین ورود نور</p>
+							</div>
+						</div>
+						<div class="subtype-card" onclick="selectSubtype(this)">
+							<div class="st-check"><svg class="icon"><use href="#i-check"/></svg></div>
+							<div class="st-img" style="overflow:hidden"><img src="/images/services/image.png" class="photo-img" alt="شیشه مات" style="filter:blur(3px) brightness(.95) saturate(.5)"></div>
+							<div class="st-body">
+								<h4 class="st-title">شیشه مات</h4>
+								<p class="st-desc">حریم خصوصی، عبور نور نرم</p>
+							</div>
+						</div>
+						<div class="subtype-card" onclick="selectSubtype(this)">
+							<div class="st-check"><svg class="icon"><use href="#i-check"/></svg></div>
+							<div class="st-img" style="overflow:hidden;position:relative"><img src="/images/services/image.png" class="photo-img" alt="شیشه دودی" style="filter:brightness(.55) saturate(.7)"><div style="position:absolute;inset:0;background:rgba(30,44,58,.35)"></div></div>
+							<div class="st-body">
+								<h4 class="st-title">شیشه دودی</h4>
+								<p class="st-desc">کاهش تابش، ظاهر مدرن</p>
+							</div>
+						</div>
+						<div class="subtype-card" onclick="selectSubtype(this)">
+							<div class="st-check"><svg class="icon"><use href="#i-check"/></svg></div>
+							<div class="st-img" style="overflow:hidden;position:relative"><img src="/images/services/image.png" class="photo-img" alt="شیشه آینه‌ای" style="filter:brightness(1.1) saturate(.4) contrast(1.1)"><div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.25) 0%,rgba(255,255,255,.05) 50%,rgba(255,255,255,.2) 100%)"></div></div>
+							<div class="st-body">
+								<h4 class="st-title">شیشه آینه‌ای</h4>
+								<p class="st-desc">انعکاس نور، طراحی خاص</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="bottombar"><button class="btn btn-primary btn-block" onclick="showScreen('wizardInfo')">مرحله بعد</button></div>
+			</div>
+
+			<!-- WIZARD STEP 2: PROJECT INFO -->
+			<div class="screen" id="screen-wizardInfo">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('wizardSelect')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>سفارش جدید</h2><div class="side"></div></div>
+				<div class="content">
+					<div class="steps"><div class="step-dot done"></div><div class="step-dot current"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+					<p class="eyebrow">مرحله ۲ از ۶</p>
+					<h3 class="title" style="font-size:16px;margin-bottom:4px">اطلاعات پروژه</h3>
+					<p class="sub" style="margin-bottom:18px">ابعاد دقیق فضای مورد نظر را وارد کنید</p>
+					<div style="display:flex;gap:10px">
+						<div class="field" style="flex:1"><label>عرض (سانتی‌متر)</label><input type="text" placeholder="مثلاً ۳۲۰"></div>
+						<div class="field" style="flex:1"><label>ارتفاع (سانتی‌متر)</label><input type="text" placeholder="مثلاً ۲۴۰"></div>
+					</div>
+					<div class="field"><label>توضیحات تکمیلی (اختیاری)</label><textarea rows="3" placeholder="نکات مهم درباره فضای نصب را بنویسید"></textarea></div>
+					<div class="card" style="background:var(--accent-soft);border-color:transparent">
+						<p style="font-size:12px;color:var(--accent);margin:0;line-height:1.8">راهنمایی: برای دقت بیشتر، اندازه‌گیری را در سه نقطه از عرض و ارتفاع انجام دهید.</p>
+					</div>
+				</div>
+				<div class="bottombar" style="display:flex;gap:10px">
+					<button class="btn btn-outline" style="flex:1" onclick="showScreen('wizardSelect')">مرحله قبل</button>
+					<button class="btn btn-primary" style="flex:2" onclick="showScreen('wizardPhotos')">مرحله بعد</button>
+				</div>
+			</div>
+
+			<!-- WIZARD STEP 3: PHOTOS -->
+			<div class="screen" id="screen-wizardPhotos">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('wizardInfo')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>سفارش جدید</h2><div class="side"></div></div>
+				<div class="content">
+					<div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot current"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+					<p class="eyebrow">مرحله ۳ از ۶</p>
+					<h3 class="title" style="font-size:16px;margin-bottom:4px">آپلود تصاویر</h3>
+					<p class="sub" style="margin-bottom:16px">عکس‌هایی از محل نصب برای برآورد دقیق‌تر بارگذاری کنید</p>
+					<div style="border:1.8px dashed var(--border);border-radius:var(--r-md);padding:26px 16px;text-align:center;margin-bottom:14px;cursor:pointer" onclick="showToast('info','انتخاب تصاویر','برای انتخاب از گالری یا دوربین ضربه بزنید')">
+						<div style="width:44px;height:44px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 10px"><svg class="icon"><use href="#i-camera"/></svg></div>
+						<p style="font-size:12.5px;font-weight:700;margin:0 0 4px">برای انتخاب تصاویر ضربه بزنید</p>
+						<p class="sub">حداکثر ۵ فایل، فرمت jpg یا png</p>
+					</div>
+					<div style="display:flex;gap:8px">
+						<div style="width:64px;height:64px;border-radius:10px;overflow:hidden;position:relative;flex:none"><img src="/images/services/image.png" class="photo-img" alt="تصویر ۱"><div class="badge badge-success" style="position:absolute;bottom:4px;left:4px;font-size:8.5px;padding:2px 6px">۱</div></div>
+						<div style="width:64px;height:64px;border-radius:10px;overflow:hidden;position:relative;flex:none"><img src="/images/services/image.png" class="photo-img" alt="تصویر ۲" style="object-position:right center"><div class="badge badge-success" style="position:absolute;bottom:4px;left:4px;font-size:8.5px;padding:2px 6px">۲</div></div>
+						<div style="width:64px;height:64px;border-radius:10px;border:1.6px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink-faint)"><svg class="icon" style="width:16px;height:16px"><use href="#i-plus"/></svg></div>
+					</div>
+				</div>
+				<div class="bottombar" style="display:flex;gap:10px">
+					<button class="btn btn-outline" style="flex:1" onclick="showScreen('wizardInfo')">مرحله قبل</button>
+					<button class="btn btn-primary" style="flex:2" onclick="showScreen('wizardLocation')">مرحله بعد</button>
+				</div>
+			</div>
+
+			<!-- WIZARD STEP 4: LOCATION -->
+			<div class="screen" id="screen-wizardLocation">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('wizardPhotos')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>سفارش جدید</h2><div class="side"></div></div>
+				<div class="content">
+					<div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot current"></div><div class="step-dot"></div><div class="step-dot"></div></div>
+					<p class="eyebrow">مرحله ۴ از ۶</p>
+					<h3 class="title" style="font-size:16px;margin-bottom:4px">موقعیت نصب</h3>
+					<p class="sub" style="margin-bottom:14px">موقعیت را روی نقشه انتخاب کنید یا یکی از آدرس‌های ذخیره‌شده را برگزینید</p>
+
+					<!-- Map -->
+					<div class="map-wrap">
+						<svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice">
+							<rect width="300" height="150" fill="var(--surface-2)"/>
+							<defs>
+								<pattern id="mapGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+									<path d="M30 0H0V30" fill="none" stroke="var(--border)" stroke-width=".7" opacity=".5"/>
+								</pattern>
+							</defs>
+							<rect width="300" height="150" fill="url(#mapGrid)"/>
+							<!-- Roads -->
+							<path d="M0 45 L300 45" stroke="var(--surface)" stroke-width="8" opacity=".9"/>
+							<path d="M0 100 L300 100" stroke="var(--surface)" stroke-width="10" opacity=".9"/>
+							<path d="M80 0 L80 150" stroke="var(--surface)" stroke-width="8" opacity=".9"/>
+							<path d="M200 0 L200 150" stroke="var(--surface)" stroke-width="10" opacity=".9"/>
+							<!-- Blocks -->
+							<rect x="10" y="55" width="60" height="35" rx="3" fill="var(--accent)" opacity=".1"/>
+							<rect x="90" y="55" width="100" height="35" rx="3" fill="var(--accent)" opacity=".08"/>
+							<rect x="210" y="55" width="80" height="35" rx="3" fill="var(--accent)" opacity=".1"/>
+							<rect x="10" y="110" width="60" height="35" rx="3" fill="var(--success)" opacity=".08"/>
+							<rect x="90" y="110" width="100" height="35" rx="3" fill="var(--accent)" opacity=".08"/>
+							<rect x="210" y="110" width="80" height="35" rx="3" fill="var(--success)" opacity=".08"/>
+							<!-- Park -->
+							<circle cx="40" cy="25" r="12" fill="var(--success)" opacity=".15"/>
+						</svg>
+						<div class="map-pin"><svg class="icon"><use href="#i-pin"/></svg></div>
+						<div class="map-controls">
+							<div class="mc-btn"><svg class="icon" style="width:16px;height:16px"><use href="#i-plus"/></svg></div>
+							<div class="mc-btn"><svg class="icon" style="width:16px;height:16px"><use href="#i-minus"/></svg></div>
+						</div>
+						<div class="map-locator"><svg class="icon" style="width:17px;height:17px"><use href="#i-locate"/></svg></div>
+					</div>
+					<p class="sub" style="text-align:center;margin:8px 0 16px;font-size:11.5px">موقعیت انتخاب‌شده: تهران، سعادت‌آباد</p>
+
+					<div class="sectiontitle" style="margin-top:0"><h3>آدرس‌های ذخیره‌شده</h3></div>
+					<div class="addr-card selected" onclick="selectAddr(this)">
+						<div class="a-radio"></div>
+						<div class="a-body">
+							<div class="a-title"><h4>خانه</h4><span class="badge badge-accent" style="font-size:9px">پیش‌فرض</span></div>
+							<p class="a-text">تهران، سعادت‌آباد، خیابان سرو غربی، پلاک ۱۴</p>
+						</div>
+					</div>
+					<div class="addr-card" onclick="selectAddr(this)">
+						<div class="a-radio"></div>
+						<div class="a-body">
+							<div class="a-title"><h4>محل کار</h4></div>
+							<p class="a-text">تهران، ونک، خیابان ملاصدرا، پلاک ۸۸</p>
+						</div>
+					</div>
+					<button class="addr-add"><svg class="icon" style="width:15px;height:15px"><use href="#i-plus"/></svg>افزودن آدرس جدید</button>
+				</div>
+				<div class="bottombar" style="display:flex;gap:10px">
+					<button class="btn btn-outline" style="flex:1" onclick="showScreen('wizardPhotos')">مرحله قبل</button>
+					<button class="btn btn-primary" style="flex:2" onclick="showScreen('wizardPrice')">مرحله بعد</button>
+				</div>
+			</div>
+
+			<!-- WIZARD STEP 5: PRICE -->
+			<div class="screen" id="screen-wizardPrice">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('wizardLocation')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>سفارش جدید</h2><div class="side"></div></div>
+				<div class="content">
+					<div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot current"></div><div class="step-dot"></div></div>
+					<p class="eyebrow">مرحله ۵ از ۶</p>
+					<h3 class="title" style="font-size:16px;margin-bottom:14px">برآورد قیمت</h3>
+
+					<div class="price-card">
+						<div class="pc-head">
+							<p class="pc-eyebrow">بالکن شیشه‌ای ریلی · شیشه شفاف</p>
+							<p class="pc-title">برآورد هزینه</p>
+						</div>
+						<div class="pc-body">
+							<div class="price-row">
+								<div class="pr-icon"><svg class="icon"><use href="#i-glass"/></svg></div>
+								<div class="pr-label">شیشه و پروفیل</div>
+								<div class="pr-value">۱۴,۰۰۰,۰۰۰ ت</div>
+							</div>
+							<div class="price-row">
+								<div class="pr-icon"><svg class="icon"><use href="#i-tools"/></svg></div>
+								<div class="pr-label">یراق‌آلات</div>
+								<div class="pr-value">۲,۵۰۰,۰۰۰ ت</div>
+							</div>
+							<div class="price-row">
+								<div class="pr-icon"><svg class="icon"><use href="#i-truck"/></svg></div>
+								<div class="pr-label">نصب و اجرا</div>
+								<div class="pr-value">۲,۰۰۰,۰۰۰ ت</div>
+							</div>
+						</div>
+						<div class="pc-total">
+							<div class="pt-label">برآورد کل</div>
+							<div class="pt-value">۱۸,۵۰۰,۰۰۰ <span>تومان</span></div>
+						</div>
+					</div>
+
+					<div class="card" style="background:var(--warn-soft);border-color:transparent;margin-top:14px;display:flex;gap:10px;align-items:flex-start">
+						<svg class="icon" style="color:var(--warn);flex:none;margin-top:1px"><use href="#i-alert"/></svg>
+						<p style="font-size:11.5px;margin:0;color:#8a6a10;line-height:1.8">این مبلغ برآوردی است. قیمت نهایی پس از بازدید کارشناس تایید می‌شود.</p>
+					</div>
+				</div>
+				<div class="bottombar" style="display:flex;gap:10px">
+					<button class="btn btn-outline" style="flex:1" onclick="showScreen('wizardLocation')">مرحله قبل</button>
+					<button class="btn btn-primary" style="flex:2" onclick="showScreen('wizardDone')">ثبت سفارش</button>
+				</div>
+			</div>
+
+			<!-- WIZARD STEP 6: DONE -->
+			<div class="screen" id="screen-wizardDone">
+				<div class="appbar"><div class="side"></div><h2>سفارش جدید</h2><div class="side"></div></div>
+				<div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px">
+					<div class="steps" style="width:100%"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div></div>
+					<div style="width:64px;height:64px;border-radius:50%;background:var(--success-soft);color:var(--success);display:flex;align-items:center;justify-content:center"><svg class="icon" style="width:30px;height:30px"><use href="#i-check"/></svg></div>
+					<div>
+						<h3 class="title" style="font-size:16px">سفارش شما ثبت شد</h3>
+						<p class="sub" style="margin-top:6px">شماره سفارش #۱۲۵۳ — کارشناسان ما به‌زودی با شما تماس می‌گیرند</p>
+					</div>
+				</div>
+				<div class="bottombar" style="display:flex;flex-direction:column;gap:10px">
+					<button class="btn btn-primary btn-block" onclick="showScreen('orderDetail')">مشاهده جزئیات سفارش</button>
+					<button class="btn btn-ghost btn-block" onclick="showScreen('home')">بازگشت به خانه</button>
+				</div>
+			</div>
+
+			<!-- STORE -->
+			<div class="screen" id="screen-store">
+				<div class="appbar"><div class="side"></div><h2>فروشگاه</h2><div class="side"><div class="iconbtn" onclick="showScreen('cart')"><svg class="icon"><use href="#i-cart"/></svg></div></div></div>
+				<div class="content">
+					<div style="display:flex;gap:8px;margin-bottom:12px">
+						<div style="flex:1;display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1.4px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;color:var(--ink-faint)">
+							<svg class="icon" style="width:16px;height:16px"><use href="#i-search"/></svg><span style="font-size:12.5px">جستجوی محصول...</span>
+						</div>
+						<div class="iconbtn" style="width:40px;height:40px"><svg class="icon"><use href="#i-filter"/></svg></div>
+					</div>
+					<div class="noscroll" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px">
+						<button class="btn-ghost btn" style="background:var(--accent-fill);color:#fff;padding:8px 14px;font-size:11.5px">همه</button>
+						<button class="btn-ghost btn" style="padding:8px 14px;font-size:11.5px">یراق‌آلات</button>
+						<button class="btn-ghost btn" style="padding:8px 14px;font-size:11.5px">لوازم جانبی</button>
+						<button class="btn-ghost btn" style="padding:8px 14px;font-size:11.5px">قطعات یدکی</button>
+					</div>
+					<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+						<div class="card productcard" onclick="showScreen('productDetail')">
+							<div class="illus"><img src="/images/store/image.png" class="photo-img" alt="دستگیره آلومینیومی"></div>
+							<div class="pbody"><div class="pcat">یراق‌آلات</div><div class="ptitle">دستگیره آلومینیومی</div><div class="pspec">آنودایز · ۲۵ سانتی‌متر</div><div class="prow"><span class="pprice">۴۵۰,۰۰۰ ت</span><span class="badge badge-success" style="font-size:9px;padding:2px 7px">موجود</span></div></div>
+						</div>
+						<div class="card productcard">
+							<div class="illus"><img src="/images/store/image.png" class="photo-img" alt="ریل کشویی" style="filter:brightness(.93) saturate(.8)"></div>
+							<div class="pbody"><div class="pcat">یراق‌آلات</div><div class="ptitle">ریل کشویی استاندارد</div><div class="pspec">فولاد ضدزنگ</div><div class="prow"><span class="pprice">۱,۲۰۰,۰۰۰ ت</span><span class="badge badge-success" style="font-size:9px;padding:2px 7px">موجود</span></div></div>
+						</div>
+						<div class="card productcard">
+							<div class="illus"><img src="/images/store/image.png" class="photo-img" alt="قفل چرخشی" style="filter:brightness(.88) contrast(1.05) saturate(.7)"></div>
+							<div class="pbody"><div class="pcat">لوازم جانبی</div><div class="ptitle">قفل چرخشی شیشه</div><div class="pspec">برنجی، مقاوم به زنگ</div><div class="prow"><span class="pprice">۳۹۰,۰۰۰ ت</span><span class="badge badge-success" style="font-size:9px;padding:2px 7px">موجود</span></div></div>
+						</div>
+						<div class="card productcard">
+							<div class="illus"><img src="/images/store/image.png" class="photo-img" alt="لاستیک درزگیر" style="filter:brightness(.8) saturate(.4) contrast(1.1)"></div>
+							<div class="pbody"><div class="pcat">قطعات یدکی</div><div class="ptitle">لاستیک درزگیر</div><div class="pspec">هر متر، مقاوم به UV</div><div class="prow"><span class="pprice">۹۵,۰۰۰ ت</span><span class="badge badge-warn" style="font-size:9px;padding:2px 7px">اتمام موجودی</span></div></div>
+						</div>
+					</div>
+				</div>
+				<div class="bottomnav">
+					<div class="navitem" onclick="showScreen('home')"><svg class="icon"><use href="#i-home"/></svg>خانه</div>
+					<div class="navitem" onclick="showScreen('services')"><svg class="icon"><use href="#i-grid"/></svg>خدمات</div>
+					<div class="navitem active"><svg class="icon"><use href="#i-bag"/></svg>فروشگاه</div>
+					<div class="navitem" onclick="showScreen('orders')"><svg class="icon"><use href="#i-orders"/></svg>سفارش‌ها</div>
+					<div class="navitem" onclick="showScreen('profile')"><svg class="icon"><use href="#i-user"/></svg>پروفایل</div>
+				</div>
+			</div>
+
+			<!-- PRODUCT DETAIL -->
+			<div class="screen" id="screen-productDetail">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('store')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>جزئیات محصول</h2><div class="side"><div class="iconbtn" onclick="showScreen('cart')"><svg class="icon"><use href="#i-cart"/></svg></div></div></div>
+				<div class="content" style="padding-top:0">
+					<div style="height:180px;margin:0 -16px 12px;overflow:hidden">
+						<img src="/images/store/image.png" style="width:100%;height:100%;object-fit:cover;display:block;" alt="دستگیره آلومینیومی">
+					</div>
+					<div style="display:flex;gap:8px;margin-bottom:14px">
+						<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="/images/store/image.png" class="photo-img" alt="تصویر ۱"></div>
+						<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;border:1.6px solid var(--accent)"><img src="/images/store/image.png" class="photo-img" alt="تصویر ۲" style="filter:brightness(.9) saturate(.8)"></div>
+						<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="/images/store/image.png" class="photo-img" alt="تصویر ۳" style="filter:brightness(.85) contrast(1.05) saturate(.6)"></div>
+					</div>
+					<div class="pcat" style="font-size:11px">یراق‌آلات</div>
+					<h3 class="title" style="font-size:16px">دستگیره آلومینیومی مدل کلاسیک</h3>
+					<div style="font-size:17px;font-weight:800;color:var(--accent);margin:6px 0 14px">۴۵۰,۰۰۰ تومان</div>
+					<div class="sectiontitle" style="margin-top:0"><h3>مشخصات فنی</h3></div>
+					<div class="card" style="margin-bottom:14px">
+						<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--ink-soft)">جنس</span><span style="font-weight:700">آلومینیوم آنودایز</span></div>
+						<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--ink-soft)">طول</span><span style="font-weight:700">۲۵ سانتی‌متر</span></div>
+						<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0"><span style="color:var(--ink-soft)">گارانتی</span><span style="font-weight:700">۲ سال</span></div>
+					</div>
+					<div class="sectiontitle" style="margin-top:0"><h3>رنگ</h3></div>
+					<div style="display:flex;gap:8px;margin-bottom:14px">
+						<div style="width:30px;height:30px;border-radius:50%;background:#1E2C3A;border:2px solid var(--accent)"></div>
+						<div style="width:30px;height:30px;border-radius:50%;background:#B9C2C9;border:2px solid var(--border)"></div>
+						<div style="width:30px;height:30px;border-radius:50%;background:#8C6A45;border:2px solid var(--border)"></div>
+					</div>
+					<div class="sectiontitle" style="margin-top:0"><h3>تعداد</h3></div>
+					<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+						<div class="iconbtn" style="background:var(--surface-2)"><svg class="icon" style="width:16px;height:16px"><use href="#i-minus"/></svg></div>
+						<span style="font-weight:800;font-size:14px">۲</span>
+						<div class="iconbtn" style="background:var(--surface-2)"><svg class="icon" style="width:16px;height:16px"><use href="#i-plus"/></svg></div>
+					</div>
+				</div>
+				<div class="bottombar"><button class="btn btn-primary btn-block" onclick="showScreen('cart')"><svg class="icon" style="width:16px;height:16px"><use href="#i-cart"/></svg>افزودن به سبد خرید</button></div>
+			</div>
+
+			<!-- CART -->
+			<div class="screen" id="screen-cart">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('store')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>سبد خرید</h2><div class="side"></div></div>
+				<div class="content">
+					<div class="card" style="display:flex;gap:10px;margin-bottom:10px">
+						<div style="width:52px;height:52px;border-radius:8px;flex:none;overflow:hidden;border:1px solid var(--border)"><img src="/images/store/image.png" class="photo-img" alt="دستگیره آلومینیومی"></div>
+						<div style="flex:1">
+							<h3 class="title" style="font-size:12.5px">دستگیره آلومینیومی</h3>
+							<div style="font-size:11.5px;color:var(--accent);font-weight:800;margin:4px 0 8px">۴۵۰,۰۰۰ ت</div>
+							<div style="display:flex;align-items:center;gap:10px">
+								<div class="iconbtn" style="width:26px;height:26px;background:var(--surface-2)"><svg class="icon" style="width:13px;height:13px"><use href="#i-minus"/></svg></div>
+								<span style="font-size:12px;font-weight:700">۲</span>
+								<div class="iconbtn" style="width:26px;height:26px;background:var(--surface-2)"><svg class="icon" style="width:13px;height:13px"><use href="#i-plus"/></svg></div>
+							</div>
+						</div>
+					</div>
+					<div class="card" style="display:flex;gap:10px;margin-bottom:14px">
+						<div style="width:52px;height:52px;border-radius:8px;flex:none;overflow:hidden;border:1px solid var(--border)"><img src="/images/store/image.png" class="photo-img" alt="ریل کشویی" style="filter:brightness(.93) saturate(.8)"></div>
+						<div style="flex:1">
+							<h3 class="title" style="font-size:12.5px">ریل کشویی استاندارد</h3>
+							<div style="font-size:11.5px;color:var(--accent);font-weight:800;margin:4px 0 8px">۱,۲۰۰,۰۰۰ ت</div>
+							<div style="display:flex;align-items:center;gap:10px">
+								<div class="iconbtn" style="width:26px;height:26px;background:var(--surface-2)"><svg class="icon" style="width:13px;height:13px"><use href="#i-minus"/></svg></div>
+								<span style="font-size:12px;font-weight:700">۱</span>
+								<div class="iconbtn" style="width:26px;height:26px;background:var(--surface-2)"><svg class="icon" style="width:13px;height:13px"><use href="#i-plus"/></svg></div>
+							</div>
+						</div>
+					</div>
+					<div class="field"><label>کد تخفیف</label><input type="text" placeholder="کد تخفیف را وارد کنید"></div>
+					<div class="card" style="background:var(--surface-2);border-color:transparent">
+						<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:var(--ink-soft)">جمع کالاها</span><span>۲,۱۰۰,۰۰۰ ت</span></div>
+						<div style="display:flex;justify-content:space-between;font-size:12px;padding:5px 0"><span style="color:var(--ink-soft)">هزینه ارسال</span><span>۱۵۰,۰۰۰ ت</span></div>
+						<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:800;padding:9px 0 0;border-top:1px solid var(--border);margin-top:6px"><span>مبلغ نهایی</span><span style="color:var(--accent)">۲,۲۵۰,۰۰۰ ت</span></div>
+					</div>
+				</div>
+				<div class="bottombar"><button class="btn btn-primary btn-block" onclick="showScreen('checkout')">ادامه فرآیند خرید</button></div>
+			</div>
+
+			<!-- CHECKOUT -->
+			<div class="screen" id="screen-checkout">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('cart')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>پرداخت</h2><div class="side"></div></div>
+				<div class="content">
+					<!-- Address section -->
+					<div class="sectiontitle" style="margin-top:0"><h3>آدرس تحویل</h3><a onclick="showSheet('sheet-addresses')" style="cursor:pointer">تغییر</a></div>
+					<div class="addr-card selected" onclick="selectAddr(this)" style="margin-bottom:16px">
+						<div class="a-radio"></div>
+						<div class="a-body">
+							<div class="a-title"><h4>خانه</h4><span class="badge badge-accent" style="font-size:9px">پیش‌فرض</span></div>
+							<p class="a-text">تهران، سعادت‌آباد، خیابان سرو غربی، پلاک ۱۴</p>
+						</div>
+					</div>
+					<button class="addr-add" style="margin-bottom:18px" onclick="showSheet('sheet-addresses')"><svg class="icon" style="width:15px;height:15px"><use href="#i-plus"/></svg>افزودن آدرس جدید</button>
+
+					<div class="sectiontitle" style="margin-top:0"><h3>روش پرداخت</h3></div>
+					<div style="display:flex;flex-direction:column;gap:10px">
+						<div class="card glass-edge" style="display:flex;justify-content:space-between;align-items:center;border-color:var(--accent)">
+							<div><h3 class="title">پرداخت آنلاین</h3><p class="sub">پرداخت فوری و شروع بلافاصله ارسال</p></div>
+							<div style="width:20px;height:20px;border-radius:50%;border:5px solid var(--accent-fill)"></div>
+						</div>
+						<div class="card" style="display:flex;justify-content:space-between;align-items:center">
+							<div><h3 class="title">اقساطی</h3><p class="sub">پرداخت طی چند قسط پس از بررسی</p></div>
+							<div style="width:20px;height:20px;border-radius:50%;border:1.6px solid var(--border)"></div>
+						</div>
+						<div class="card" style="display:flex;justify-content:space-between;align-items:center">
+							<div><h3 class="title">چک</h3><p class="sub">ثبت چک و بررسی توسط شرکت</p></div>
+							<div style="width:20px;height:20px;border-radius:50%;border:1.6px solid var(--border)"></div>
+						</div>
+					</div>
+					<div class="card" style="background:var(--warn-soft);border-color:transparent;margin-top:16px;display:flex;gap:10px;align-items:flex-start">
+						<svg class="icon" style="color:var(--warn);flex:none;margin-top:1px"><use href="#i-alert"/></svg>
+						<p style="font-size:11.5px;margin:0;color:#8a6a10;line-height:1.8">سفارش‌های اقساطی و چکی تا تایید شرکت در وضعیت «در انتظار بررسی» باقی می‌مانند.</p>
+					</div>
+				</div>
+				<div class="bottombar"><button class="btn btn-primary btn-block" onclick="showToast('success','پرداخت موفق','سفارش شما با موفقیت ثبت شد');setTimeout(()=>showScreen('orders'),1200)">پرداخت و ثبت نهایی</button></div>
+			</div>
+
+			<!-- ORDERS -->
+			<div class="screen" id="screen-orders">
+				<div class="appbar"><div class="side"></div><h2>سفارش‌های من</h2><div class="side"></div></div>
+				<div class="content">
+					<div style="display:flex;gap:8px;margin-bottom:14px">
+						<button class="btn" style="flex:1;background:var(--accent-fill);color:#fff;padding:9px;font-size:12px">سفارش‌های خدماتی</button>
+						<button class="btn-ghost btn" style="flex:1;padding:9px;font-size:12px">سفارش‌های فروشگاهی</button>
+					</div>
+					<div class="card glass-edge" style="margin-bottom:10px" onclick="showScreen('orderDetail')">
+						<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+							<h3 class="title">بالکن ریلی #۱۲۴۸</h3><span class="badge badge-accent">در تولید</span>
+						</div>
+						<p class="sub">ثبت: ۲ تیر ۱۴۰۴ · مبلغ: ۱۸,۵۰۰,۰۰۰ ت</p>
+					</div>
+					<div class="card" style="margin-bottom:10px">
+						<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+							<h3 class="title">کابین حمام #۱۲۳۱</h3><span class="badge badge-warn">در انتظار پرداخت</span>
+						</div>
+						<p class="sub">ثبت: ۱۸ خرداد ۱۴۰۴ · مبلغ: ۹,۸۰۰,۰۰۰ ت</p>
+					</div>
+					<div class="card">
+						<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+							<h3 class="title">پارتیشن اداری #۱۱۹۰</h3><span class="badge badge-success">تکمیل شده</span>
+						</div>
+						<p class="sub">ثبت: ۲ اردیبهشت ۱۴۰۴ · مبلغ: ۳۲,۰۰۰,۰۰۰ ت</p>
+					</div>
+				</div>
+				<div class="bottomnav">
+					<div class="navitem" onclick="showScreen('home')"><svg class="icon"><use href="#i-home"/></svg>خانه</div>
+					<div class="navitem" onclick="showScreen('services')"><svg class="icon"><use href="#i-grid"/></svg>خدمات</div>
+					<div class="navitem" onclick="showScreen('store')"><svg class="icon"><use href="#i-bag"/></svg>فروشگاه</div>
+					<div class="navitem active"><svg class="icon"><use href="#i-orders"/></svg>سفارش‌ها</div>
+					<div class="navitem" onclick="showScreen('profile')"><svg class="icon"><use href="#i-user"/></svg>پروفایل</div>
+				</div>
+			</div>
+
+			<!-- ORDER DETAIL -->
+			<div class="screen" id="screen-orderDetail">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('orders')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>سفارش #۱۲۴۸</h2><div class="side"><div class="iconbtn" onclick="showScreen('support')"><svg class="icon"><use href="#i-clip"/></svg></div></div></div>
+				<div class="content">
+					<div class="card glass-edge" style="margin-bottom:16px">
+						<div style="display:flex;justify-content:space-between"><h3 class="title">بالکن شیشه‌ای ریلی</h3><span class="badge badge-accent">در تولید</span></div>
+						<p class="sub" style="margin-top:6px">مبلغ کل: ۱۸,۵۰۰,۰۰۰ تومان · ثبت: ۲ تیر ۱۴۰۴</p>
+					</div>
+					<div class="sectiontitle" style="margin-top:0"><h3>روند سفارش</h3></div>
+					<div class="timeline" style="margin-bottom:18px">
+						<div class="tl-item done"><h3 class="title" style="font-size:12.5px">سفارش ثبت شد</h3><p class="sub">۲ تیر ۱۴۰۴ — ۱۰:۲۰</p></div>
+						<div class="tl-item done"><h3 class="title" style="font-size:12.5px">تایید و صدور پیش‌فاکتور</h3><p class="sub">۳ تیر ۱۴۰۴ — ۱۴:۰۵</p></div>
+						<div class="tl-item now"><h3 class="title" style="font-size:12.5px">در حال تولید</h3><p class="sub">شروع: ۵ تیر ۱۴۰۴</p></div>
+						<div class="tl-item"><h3 class="title" style="font-size:12.5px;color:var(--ink-faint)">ارسال و نصب</h3></div>
+						<div class="tl-item"><h3 class="title" style="font-size:12.5px;color:var(--ink-faint)">تکمیل سفارش</h3></div>
+					</div>
+					<div class="sectiontitle"><h3>فایل‌های ارسالی</h3></div>
+					<div class="card" style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+						<svg class="icon" style="color:var(--accent)"><use href="#i-image"/></svg>
+						<span style="font-size:12px;font-weight:600;flex:1">عکس‌های محل نصب (۳ فایل)</span>
+						<svg class="icon chev" style="width:15px;height:15px;color:var(--ink-faint)"><use href="#i-back"/></svg>
+					</div>
+					<div class="sectiontitle"><h3>وضعیت پرداخت</h3></div>
+					<div class="card" style="margin-bottom:14px">
+						<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--ink-soft)">پیش‌پرداخت</span><span class="badge badge-success">پرداخت شده</span></div>
+						<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 0"><span style="color:var(--ink-soft)">قسط دوم (تحویل)</span><span class="badge badge-warn">در انتظار</span></div>
+					</div>
+					<div class="sectiontitle"><h3>اطلاعات تحویل</h3></div>
+					<div class="card" style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+						<svg class="icon" style="color:var(--accent)"><use href="#i-pin"/></svg>
+						<p class="sub" style="margin:0">تهران، سعادت‌آباد، خیابان سرو غربی، پلاک ۱۴</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- SUPPORT -->
+			<div class="screen" id="screen-support">
+				<div class="appbar"><div class="side"><div class="iconbtn" onclick="showScreen('orderDetail')"><svg class="icon"><use href="#i-back"/></svg></div></div><h2>پشتیبانی ونوس جام</h2><div class="side"></div></div>
+				<div class="content" style="display:flex;flex-direction:column">
+					<div class="chatrow">
+						<div class="chatbubble them">سلام، وقت بخیر. سفارش #۱۲۴۸ در مرحله تولید قرار داره و طبق برنامه پیش می‌ره.</div>
+						<div class="chatbubble me">سلام ممنون، تحویل تقریبی چه زمانیه؟</div>
+						<div class="chatbubble them">حدود ۸ روز کاری دیگر. تصویر مرحله برش رو براتون می‌فرستم.</div>
+						<div class="chatbubble them" style="display:flex;align-items:center;gap:8px">
+							<div style="width:48px;height:48px;border-radius:8px;overflow:hidden;flex:none;border:1px solid rgba(255,255,255,.25)"><img src="/images/services/image.png" class="photo-img" alt="مرحله برش شیشه"></div>
+							<span>مرحله-برش-شیشه.jpg</span>
+						</div>
+						<div class="chatbubble me">عالیه، ممنون از پیگیری</div>
+					</div>
+				</div>
+				<div class="bottombar" style="display:flex;gap:8px;align-items:center;padding-top:10px">
+					<div class="iconbtn" style="background:var(--surface-2)"><svg class="icon" style="width:17px;height:17px"><use href="#i-clip"/></svg></div>
+					<div style="flex:1;background:var(--surface-2);border:1.4px solid var(--border);border-radius:var(--r-pill);padding:10px 14px;font-size:12.5px;color:var(--ink-faint)">پیام خود را بنویسید...</div>
+					<div class="iconbtn" style="background:var(--accent-fill);color:#fff"><svg class="icon" style="width:17px;height:17px"><use href="#i-send"/></svg></div>
+				</div>
+			</div>
+
+			<!-- PROFILE -->
+			<div class="screen" id="screen-profile">
+				<div class="appbar"><div class="side"></div><h2>پروفایل</h2><div class="side"></div></div>
+				<div class="content">
+					<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+						<div style="width:56px;height:56px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:18px">ع.م</div>
+						<div><h3 class="title" style="font-size:15px">علی محمدی</h3><span class="badge badge-accent">مشتری</span></div>
+					</div>
+					<div style="display:flex;flex-direction:column;gap:2px;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:16px">
+						<div class="listrow" onclick="showSheet('sheet-personal')"><svg class="icon" style="color:var(--ink-soft)"><use href="#i-user"/></svg><span style="font-size:13px;flex:1">اطلاعات شخصی</span><svg class="icon chev" style="width:15px;height:15px;color:var(--ink-faint)"><use href="#i-back"/></svg></div>
+						<div class="listrow" onclick="showSheet('sheet-addresses')"><svg class="icon" style="color:var(--ink-soft)"><use href="#i-pin"/></svg><span style="font-size:13px;flex:1">آدرس‌های ذخیره‌شده</span><svg class="icon chev" style="width:15px;height:15px;color:var(--ink-faint)"><use href="#i-back"/></svg></div>
+						<div class="listrow" onclick="showScreen('orders')"><svg class="icon" style="color:var(--ink-soft)"><use href="#i-orders"/></svg><span style="font-size:13px;flex:1">تاریخچه سفارش‌ها</span><svg class="icon chev" style="width:15px;height:15px;color:var(--ink-faint)"><use href="#i-back"/></svg></div>
+						<div class="listrow" onclick="showSheet('sheet-notifications')" style="border-bottom:none"><svg class="icon" style="color:var(--ink-soft)"><use href="#i-bell"/></svg><span style="font-size:13px;flex:1">اعلان‌ها</span><svg class="icon chev" style="width:15px;height:15px;color:var(--ink-faint)"><use href="#i-back"/></svg></div>
+					</div>
+					<div class="sectiontitle"><h3>کامپوننت‌های سیستم طراحی</h3></div>
+					<div class="demo-grid">
+						<div class="demo-btn" onclick="showToast('success','موفقیت','عملیات با موفقیت انجام شد')"><div class="d-ic success"><svg class="icon"><use href="#i-check"/></svg></div>توست موفقیت</div>
+						<div class="demo-btn" onclick="showToast('warning','هشدار','موجودی در حال اتمام است')"><div class="d-ic warning"><svg class="icon"><use href="#i-alert"/></svg></div>توست هشدار</div>
+						<div class="demo-btn" onclick="showToast('error','خطا','خطا در ارتباط با سرور')"><div class="d-ic error"><svg class="icon"><use href="#i-x"/></svg></div>توست خطا</div>
+						<div class="demo-btn" onclick="showToast('info','اطلاعرسانی','نسخه جدید اپلیکیشن منتشر شد')"><div class="d-ic info"><svg class="icon"><use href="#i-info"/></svg></div>توست اطلاعات</div>
+						<div class="demo-btn" onclick="showDialog('dialog-exit-center')"><div class="d-ic danger"><svg class="icon"><use href="#i-logout"/></svg></div>دیالوگ مرکزی</div>
+						<div class="demo-btn" onclick="showDialog('dialog-exit-sheet')"><div class="d-ic accent"><svg class="icon"><use href="#i-logout"/></svg></div>دیالوگ باتم‌شیت</div>
+					</div>
+					<button class="btn btn-ghost btn-block" style="color:var(--danger);margin-top:16px" onclick="showDialog('dialog-exit-center')"><svg class="icon" style="width:16px;height:16px"><use href="#i-logout"/></svg>خروج از حساب</button>
+				</div>
+				<div class="bottomnav">
+					<div class="navitem" onclick="showScreen('home')"><svg class="icon"><use href="#i-home"/></svg>خانه</div>
+					<div class="navitem" onclick="showScreen('services')"><svg class="icon"><use href="#i-grid"/></svg>خدمات</div>
+					<div class="navitem" onclick="showScreen('store')"><svg class="icon"><use href="#i-bag"/></svg>فروشگاه</div>
+					<div class="navitem" onclick="showScreen('orders')"><svg class="icon"><use href="#i-orders"/></svg>سفارش‌ها</div>
+					<div class="navitem active"><svg class="icon"><use href="#i-user"/></svg>پروفایل</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<!-- ===== BOTTOM SHEETS ===== -->
+<div class="sheet-overlay" id="sheet-personal" onclick="closeSheetOverlay(event,'sheet-personal')">
+	<div class="sheet" onclick="event.stopPropagation()">
+		<div class="sheet-handle"></div>
+		<div class="sheet-header">
+			<h3>اطلاعات شخصی</h3>
+			<div class="iconbtn" onclick="closeSheet('sheet-personal')"><svg class="icon"><use href="#i-x"/></svg></div>
+		</div>
+		<div class="sheet-body">
+			<div style="display:flex;justify-content:center;margin-bottom:20px">
+				<div style="width:64px;height:64px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:20px">ع.م</div>
+			</div>
+			<div class="field"><label>نام و نام خانوادگی</label><input type="text" value="علی محمدی"></div>
+			<div class="field">
+				<label>شماره موبایل</label>
+				<input type="text" value="۰۹۱۲۰۰۰۰۰۰۰" style="direction:ltr;text-align:left;color:var(--ink-faint);background:var(--surface-2);cursor:not-allowed" disabled>
+				<div class="hint"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>شماره موبایل قابل ویرایش نیست</div>
+			</div>
+			<div class="field"><label>ایمیل (اختیاری)</label><input type="text" placeholder="example@mail.com" style="direction:ltr;text-align:left"></div>
+		</div>
+		<div class="sheet-footer">
+			<button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-personal')">انصراف</button>
+			<button class="btn btn-primary" style="flex:2" onclick="closeSheet('sheet-personal');showToast('success','ذخیره شد','اطلاعات شخصی به‌روزرسانی شد')">ذخیره تغییرات</button>
+		</div>
+	</div>
+</div>
+
+<div class="sheet-overlay" id="sheet-addresses" onclick="closeSheetOverlay(event,'sheet-addresses')">
+	<div class="sheet" onclick="event.stopPropagation()">
+		<div class="sheet-handle"></div>
+		<div class="sheet-header">
+			<h3>آدرس‌های ذخیره‌شده</h3>
+			<div class="iconbtn" onclick="closeSheet('sheet-addresses')"><svg class="icon"><use href="#i-x"/></svg></div>
+		</div>
+		<div class="sheet-body">
+			<div class="addr-card selected" onclick="selectAddr(this)">
+				<div class="a-radio"></div>
+				<div class="a-body">
+					<div class="a-title"><h4>خانه</h4><span class="badge badge-accent" style="font-size:9px">پیش‌فرض</span></div>
+					<p class="a-text">تهران، سعادت‌آباد، خیابان سرو غربی، پلاک ۱۴</p>
+				</div>
+			</div>
+			<div class="addr-card" onclick="selectAddr(this)">
+				<div class="a-radio"></div>
+				<div class="a-body">
+					<div class="a-title"><h4>محل کار</h4></div>
+					<p class="a-text">تهران، ونک، خیابان ملاصدرا، پلاک ۸۸</p>
+				</div>
+			</div>
+			<button class="addr-add" onclick="showToast('info','آدرس جدید','فرم افزودن آدرس باز می‌شود')"><svg class="icon" style="width:15px;height:15px"><use href="#i-plus"/></svg>افزودن آدرس جدید</button>
+		</div>
+		<div class="sheet-footer">
+			<button class="btn btn-primary btn-block" onclick="closeSheet('sheet-addresses');showToast('success','انتخاب شد','آدرس تحویل به‌روزرسانی شد')">تایید</button>
+		</div>
+	</div>
+</div>
+
+<div class="sheet-overlay" id="sheet-notifications" onclick="closeSheetOverlay(event,'sheet-notifications')">
+	<div class="sheet" onclick="event.stopPropagation()">
+		<div class="sheet-handle"></div>
+		<div class="sheet-header">
+			<h3>اعلان‌ها</h3>
+			<div class="iconbtn" onclick="closeSheet('sheet-notifications')"><svg class="icon"><use href="#i-x"/></svg></div>
+		</div>
+		<div class="sheet-body">
+			<p class="sub" style="margin-bottom:14px">نحوه اطلاع‌رسانی درباره سفارش‌ها و پیشنهادها را مشخص کنید</p>
+			<div class="card">
+				<div class="togglerow">
+					<div><h3 class="title" style="font-size:13px">اعلان‌های درون‌برنامه‌ای</h3><p class="sub">وضعیت سفارش و پیام‌های پشتیبانی</p></div>
+					<div class="switch on" onclick="this.classList.toggle('on')"></div>
+				</div>
+				<div class="togglerow">
+					<div><h3 class="title" style="font-size:13px">پیامک (SMS)</h3><p class="sub">اطلاع‌رسانی مراحل مهم سفارش با پیامک</p></div>
+					<div class="switch on" onclick="this.classList.toggle('on')"></div>
+				</div>
+				<div class="togglerow">
+					<div><h3 class="title" style="font-size:13px">پیشنهادها و تخفیف‌ها</h3><p class="sub">اطلاع از تخفیف‌ها و کمپین‌های ویژه</p></div>
+					<div class="switch" onclick="this.classList.toggle('on')"></div>
+				</div>
+			</div>
+		</div>
+		<div class="sheet-footer">
+			<button class="btn btn-primary btn-block" onclick="closeSheet('sheet-notifications');showToast('success','ذخیره شد','تنظیمات اعلان‌ها به‌روزرسانی شد')">ذخیره تنظیمات</button>
+		</div>
+	</div>
+</div>
+
+<!-- ===== CONFIRMATION DIALOGS ===== -->
+<!-- Centered dialog -->
+<div class="dialog-overlay" id="dialog-exit-center" onclick="closeDialogOverlay(event,'dialog-exit-center')">
+	<div class="dialog" onclick="event.stopPropagation()">
+		<div class="d-icon danger"><svg class="icon"><use href="#i-logout"/></svg></div>
+		<h3>خروج از حساب</h3>
+		<p>آیا مطمئن هستید که می‌خواهید از حساب کاربری خود خارج شوید؟</p>
+		<div class="d-actions">
+			<button class="btn btn-ghost" style="flex:1" onclick="closeDialog('dialog-exit-center')">انصراف</button>
+			<button class="btn btn-danger" style="flex:1" onclick="closeDialog('dialog-exit-center');showToast('info','خروج','شما از حساب خارج شدید')">خروج</button>
+		</div>
+	</div>
+</div>
+
+<!-- Bottom sheet confirmation -->
+<div class="sheet-overlay" id="dialog-exit-sheet" onclick="closeSheetOverlay(event,'dialog-exit-sheet')">
+	<div class="sheet" onclick="event.stopPropagation()">
+		<div class="sheet-handle"></div>
+		<div class="sheet-body" style="text-align:center;padding:20px 20px 8px">
+			<div class="d-icon danger" style="margin:0 auto 14px"><svg class="icon"><use href="#i-logout"/></svg></div>
+			<h3 style="font-size:16px;font-weight:800;margin:0 0 8px">خروج از برنامه</h3>
+			<p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;line-height:1.7">آیا مطمئن هستید که می‌خواهید از برنامه خارج شوید؟</p>
+		</div>
+		<div class="sheet-footer">
+			<button class="btn btn-ghost" style="flex:1" onclick="closeSheet('dialog-exit-sheet')">انصراف</button>
+			<button class="btn btn-danger" style="flex:1" onclick="closeSheet('dialog-exit-sheet');showToast('info','خروج','برنامه بسته شد')">خروج</button>
+		</div>
+	</div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+	const screens = [
+		{id:'splash', label:'اسپلش'},
+		{id:'login', label:'شماره موبایل'},
+		{id:'otp', label:'کد تایید'},
+		{id:'register', label:'ثبت‌نام'},
+		{id:'home', label:'خانه'},
+		{id:'services', label:'خدمات'},
+		{id:'serviceDetail', label:'جزئیات خدمت'},
+		{id:'wizardSelect', label:'ویزارد ۱ زیرنوع'},
+		{id:'wizardInfo', label:'ویزارد ۲ اطلاعات'},
+		{id:'wizardPhotos', label:'ویزارد ۳ تصاویر'},
+		{id:'wizardLocation', label:'ویزارد ۴ موقعیت'},
+		{id:'wizardPrice', label:'ویزارد ۵ قیمت'},
+		{id:'wizardDone', label:'ویزارد ۶ تایید'},
+		{id:'store', label:'فروشگاه'},
+		{id:'productDetail', label:'جزئیات محصول'},
+		{id:'cart', label:'سبد خرید'},
+		{id:'checkout', label:'پرداخت'},
+		{id:'orders', label:'سفارش‌ها'},
+		{id:'orderDetail', label:'جزئیات سفارش'},
+		{id:'support', label:'پشتیبانی'},
+		{id:'profile', label:'پروفایل + کامپوننت‌ها'}
+	];
+	const chipsEl = document.getElementById('chips');
+	screens.forEach((s,i)=>{
+		const b = document.createElement('button');
+		b.textContent = s.label;
+		b.dataset.id = s.id;
+		if(i===0) b.classList.add('active');
+		b.onclick = ()=>showScreen(s.id);
+		chipsEl.appendChild(b);
+	});
+	function showScreen(id){
+		document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+		document.getElementById('screen-'+id).classList.add('active');
+		document.querySelectorAll('#chips button').forEach(b=>b.classList.toggle('active', b.dataset.id===id));
+		closeAllOverlays();
+		const contentEl = document.querySelector('#screen-'+id+' .content');
+		if(contentEl) contentEl.scrollTop = 0;
+	}
+	function toggleTheme(){
+		const root = document.documentElement;
+		const isDark = root.getAttribute('data-theme') === 'dark';
+		root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+		document.getElementById('themeBtnLabel').textContent = isDark ? 'حالت تیره' : 'حالت روشن';
+	}
+
+	/* Subtype selection */
+	function selectSubtype(el){
+		const grid = el.parentElement;
+		grid.querySelectorAll('.subtype-card').forEach(c=>c.classList.remove('selected'));
+		el.classList.add('selected');
+	}
+
+	/* Address selection */
+	function selectAddr(el){
+		const parent = el.parentElement;
+		parent.querySelectorAll('.addr-card').forEach(c=>c.classList.remove('selected'));
+		el.classList.add('selected');
+	}
+
+	/* Bottom sheets */
+	function showSheet(id){
+		document.getElementById(id).classList.add('open');
+	}
+	function closeSheet(id){
+		document.getElementById(id).classList.remove('open');
+	}
+	function closeSheetOverlay(e,id){
+		if(e.target === e.currentTarget) closeSheet(id);
+	}
+
+	/* Dialogs */
+	function showDialog(id){
+		document.getElementById(id).classList.add('open');
+	}
+	function closeDialog(id){
+		document.getElementById(id).classList.remove('open');
+	}
+	function closeDialogOverlay(e,id){
+		if(e.target === e.currentTarget) closeDialog(id);
+	}
+
+	function closeAllOverlays(){
+		document.querySelectorAll('.sheet-overlay.open, .dialog-overlay.open').forEach(o=>o.classList.remove('open'));
+	}
+
+	/* Toasts */
+	const toastIcons = {
+		success: '#i-check',
+		warning: '#i-alert',
+		error: '#i-x',
+		info: '#i-info'
+	};
+	const toastTitles = {
+		success: 'موفقیت',
+		warning: 'هشدار',
+		error: 'خطا',
+		info: 'اطلاع‌رسانی'
+	};
+	function showToast(type, title, message){
+		const container = document.getElementById('toastContainer');
+		const toast = document.createElement('div');
+		toast.className = 'toast ' + type;
+		toast.innerHTML = `
+			<div class="t-icon"><svg class="icon"><use href="${toastIcons[type]}"/></svg></div>
+			<div class="t-body">
+				<h4 class="t-title">${title || toastTitles[type]}</h4>
+				<p class="t-msg">${message}</p>
+			</div>
+			<div class="t-close" onclick="this.parentElement.classList.add('out');setTimeout(()=>this.parentElement.remove(),250)"><svg class="icon"><use href="#i-x"/></svg></div>
+		`;
+		container.appendChild(toast);
+		setTimeout(()=>{
+			if(toast.parentElement){
+				toast.classList.add('out');
+				setTimeout(()=>toast.remove(),250);
+			}
+		}, 3500);
+	}
+</script>
+</body>
+</html>
