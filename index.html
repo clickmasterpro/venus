@@ -432,7 +432,7 @@
 	<button class="themebtn" onclick="toggleTheme()" id="themeBtnLabel">حالت تیره</button>
 </div>
 
-<div class="notice">نسخه پنجم: تصاویر واقعی پروژه جایگزین تصویرسازی SVG شدند — services/image.png در کاروسل، کارت خدمات، صفحه جزئیات، تصاویر آپلود و زیرنوع‌های ویزارد (با فیلتر CSS برای شفاف/مات/دودی/آینه‌ای) و چت پشتیبانی؛ store/image.png در محصولات فروشگاه، کارت‌های سبد خرید و صفحه جزئیات محصول.</div>
+<div class="notice">نسخه ششم: تمام اسلایدهای کاروسل و کارت‌های خدمات با تصویر واقعی جایگزین شدند (فیلترهای CSS برای تمایز)؛ باتم‌شیت‌ها، دیالوگ‌ها و توست‌ها داخل فریم موبایل منتقل شدند — اکنون به‌درستی در محدوده موکاپ نمایش داده می‌شوند.</div>
 
 <div class="chips" id="chips"></div>
 
@@ -523,9 +523,9 @@
 				<div class="content">
 					<div class="carousel noscroll" style="overflow-x:auto">
 						<div class="slide" style="position:relative"><img src="/images/services/image.png" class="photo-img" alt="شیشه بالکن ریلی"><div class="slide-info"><h3>شیشه بالکن ریلی</h3></div></div>
-						<div class="slide illus" style="background:linear-gradient(135deg,#003584,#3A63AE)"><svg viewBox="0 0 100 80" style="width:60%;height:60%;opacity:.9"><use href="#il-shower"/></svg><div class="slide-info"><h3>کابین دوش</h3></div></div>
-						<div class="slide illus" style="background:linear-gradient(135deg,#123A6E,#3E6FC0)"><svg viewBox="0 0 100 80" style="width:60%;height:60%;opacity:.9"><use href="#il-partition"/></svg><div class="slide-info"><h3>پارتیشن شیشه‌ای</h3></div></div>
-						<div class="slide illus" style="background:linear-gradient(135deg,#1B2E4D,#4A6FA5)"><svg viewBox="0 0 100 80" style="width:60%;height:60%;opacity:.9"><use href="#il-hardware"/></svg><div class="slide-info"><h3>سایر خدمات</h3></div></div>
+						<div class="slide" style="position:relative"><img src="/images/services/image.png" class="photo-img" alt="کابین دوش" style="filter:hue-rotate(190deg) saturate(.8) brightness(.85);object-position:left center"><div class="slide-info"><h3>کابین دوش</h3></div></div>
+						<div class="slide" style="position:relative"><img src="/images/services/image.png" class="photo-img" alt="پارتیشن شیشه‌ای" style="filter:sepia(.35) saturate(1.2) brightness(.9);object-position:right bottom"><div class="slide-info"><h3>پارتیشن شیشه‌ای</h3></div></div>
+						<div class="slide" style="position:relative"><img src="/images/services/image.png" class="photo-img" alt="سایر خدمات" style="filter:grayscale(.5) brightness(.75) contrast(1.1)"><div class="slide-info"><h3>سایر خدمات</h3></div></div>
 					</div>
 					<div class="dots"><span class="on"></span><span></span><span></span><span></span></div>
 
@@ -545,11 +545,11 @@
 							<div style="padding:9px 10px"><div style="font-size:11.5px;font-weight:700">بالکن ریلی</div></div>
 						</div>
 						<div class="card" style="flex:none;width:132px;padding:0;overflow:hidden">
-							<div class="illus" style="height:76px"><svg viewBox="0 0 100 80"><use href="#il-shower"/></svg></div>
+							<div class="illus" style="height:76px"><img src="/images/services/image.png" class="photo-img" alt="کابین حمام" style="filter:hue-rotate(190deg) saturate(.8) brightness(.85);object-position:left center"></div>
 							<div style="padding:9px 10px"><div style="font-size:11.5px;font-weight:700">کابین حمام</div></div>
 						</div>
 						<div class="card" style="flex:none;width:132px;padding:0;overflow:hidden">
-							<div class="illus" style="height:76px"><svg viewBox="0 0 100 80"><use href="#il-partition"/></svg></div>
+							<div class="illus" style="height:76px"><img src="/images/services/image.png" class="photo-img" alt="پارتیشن" style="filter:sepia(.35) saturate(1.2) brightness(.9);object-position:right bottom"></div>
 							<div style="padding:9px 10px"><div style="font-size:11.5px;font-weight:700">پارتیشن</div></div>
 						</div>
 					</div>
@@ -604,7 +604,7 @@
 							</div>
 						</div>
 						<div class="servicecard">
-							<div class="illus"><svg viewBox="0 0 100 80"><use href="#il-shower"/></svg></div>
+							<div class="illus" style="height:130px"><img src="/images/services/image.png" class="photo-img" alt="کابین حمام" style="filter:hue-rotate(190deg) saturate(.8) brightness(.85);object-position:left center"></div>
 							<div class="body">
 								<h3 class="title">کابین حمام</h3>
 								<p class="sub">طراحی اختصاصی بر اساس متراژ سرویس بهداشتی شما</p>
@@ -613,7 +613,7 @@
 							</div>
 						</div>
 						<div class="servicecard">
-							<div class="illus"><svg viewBox="0 0 100 80"><use href="#il-partition"/></svg></div>
+							<div class="illus" style="height:130px"><img src="/images/services/image.png" class="photo-img" alt="پارتیشن شیشه‌ای" style="filter:sepia(.35) saturate(1.2) brightness(.9);object-position:right bottom"></div>
 							<div class="body">
 								<h3 class="title">پارتیشن شیشه‌ای</h3>
 								<p class="sub">مناسب فضای اداری و مسکونی با اجرای سریع</p>
@@ -621,8 +621,8 @@
 								<button class="btn btn-outline btn-block" onclick="showScreen('wizardSelect')">مشاهده و سفارش</button>
 							</div>
 						</div>
-						<div class="servicecard" style="opacity:.65">
-							<div class="illus"><svg viewBox="0 0 100 80"><use href="#il-hardware"/></svg></div>
+						<div class="servicecard" style="opacity:.75">
+							<div class="illus" style="height:130px"><img src="/images/services/image.png" class="photo-img" alt="سایر خدمات" style="filter:grayscale(.7) brightness(.65) contrast(1.1)"></div>
 							<div class="body"><h3 class="title">سایر خدمات</h3><p class="sub">خدمات جدید به‌زودی اضافه می‌شود</p></div>
 						</div>
 					</div>
@@ -1181,129 +1181,127 @@
 				</div>
 			</div>
 
-		</div>
-	</div>
-</div>
-
-<!-- ===== BOTTOM SHEETS ===== -->
-<div class="sheet-overlay" id="sheet-personal" onclick="closeSheetOverlay(event,'sheet-personal')">
-	<div class="sheet" onclick="event.stopPropagation()">
-		<div class="sheet-handle"></div>
-		<div class="sheet-header">
-			<h3>اطلاعات شخصی</h3>
-			<div class="iconbtn" onclick="closeSheet('sheet-personal')"><svg class="icon"><use href="#i-x"/></svg></div>
-		</div>
-		<div class="sheet-body">
-			<div style="display:flex;justify-content:center;margin-bottom:20px">
-				<div style="width:64px;height:64px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:20px">ع.م</div>
-			</div>
-			<div class="field"><label>نام و نام خانوادگی</label><input type="text" value="علی محمدی"></div>
-			<div class="field">
-				<label>شماره موبایل</label>
-				<input type="text" value="۰۹۱۲۰۰۰۰۰۰۰" style="direction:ltr;text-align:left;color:var(--ink-faint);background:var(--surface-2);cursor:not-allowed" disabled>
-				<div class="hint"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>شماره موبایل قابل ویرایش نیست</div>
-			</div>
-			<div class="field"><label>ایمیل (اختیاری)</label><input type="text" placeholder="example@mail.com" style="direction:ltr;text-align:left"></div>
-		</div>
-		<div class="sheet-footer">
-			<button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-personal')">انصراف</button>
-			<button class="btn btn-primary" style="flex:2" onclick="closeSheet('sheet-personal');showToast('success','ذخیره شد','اطلاعات شخصی به‌روزرسانی شد')">ذخیره تغییرات</button>
-		</div>
-	</div>
-</div>
-
-<div class="sheet-overlay" id="sheet-addresses" onclick="closeSheetOverlay(event,'sheet-addresses')">
-	<div class="sheet" onclick="event.stopPropagation()">
-		<div class="sheet-handle"></div>
-		<div class="sheet-header">
-			<h3>آدرس‌های ذخیره‌شده</h3>
-			<div class="iconbtn" onclick="closeSheet('sheet-addresses')"><svg class="icon"><use href="#i-x"/></svg></div>
-		</div>
-		<div class="sheet-body">
-			<div class="addr-card selected" onclick="selectAddr(this)">
-				<div class="a-radio"></div>
-				<div class="a-body">
-					<div class="a-title"><h4>خانه</h4><span class="badge badge-accent" style="font-size:9px">پیش‌فرض</span></div>
-					<p class="a-text">تهران، سعادت‌آباد، خیابان سرو غربی، پلاک ۱۴</p>
+			<!-- ===== BOTTOM SHEETS (inside screenwrap — constrained to mockup) ===== -->
+			<div class="sheet-overlay" id="sheet-personal" onclick="closeSheetOverlay(event,'sheet-personal')">
+				<div class="sheet" onclick="event.stopPropagation()">
+					<div class="sheet-handle"></div>
+					<div class="sheet-header">
+						<h3>اطلاعات شخصی</h3>
+						<div class="iconbtn" onclick="closeSheet('sheet-personal')"><svg class="icon"><use href="#i-x"/></svg></div>
+					</div>
+					<div class="sheet-body">
+						<div style="display:flex;justify-content:center;margin-bottom:20px">
+							<div style="width:64px;height:64px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:20px">ع.م</div>
+						</div>
+						<div class="field"><label>نام و نام خانوادگی</label><input type="text" value="علی محمدی"></div>
+						<div class="field">
+							<label>شماره موبایل</label>
+							<input type="text" value="۰۹۱۲۰۰۰۰۰۰۰" style="direction:ltr;text-align:left;color:var(--ink-faint);background:var(--surface-2);cursor:not-allowed" disabled>
+							<div class="hint"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>شماره موبایل قابل ویرایش نیست</div>
+						</div>
+						<div class="field"><label>ایمیل (اختیاری)</label><input type="text" placeholder="example@mail.com" style="direction:ltr;text-align:left"></div>
+					</div>
+					<div class="sheet-footer">
+						<button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-personal')">انصراف</button>
+						<button class="btn btn-primary" style="flex:2" onclick="closeSheet('sheet-personal');showToast('success','ذخیره شد','اطلاعات شخصی به‌روزرسانی شد')">ذخیره تغییرات</button>
+					</div>
 				</div>
 			</div>
-			<div class="addr-card" onclick="selectAddr(this)">
-				<div class="a-radio"></div>
-				<div class="a-body">
-					<div class="a-title"><h4>محل کار</h4></div>
-					<p class="a-text">تهران، ونک، خیابان ملاصدرا، پلاک ۸۸</p>
+
+			<div class="sheet-overlay" id="sheet-addresses" onclick="closeSheetOverlay(event,'sheet-addresses')">
+				<div class="sheet" onclick="event.stopPropagation()">
+					<div class="sheet-handle"></div>
+					<div class="sheet-header">
+						<h3>آدرس‌های ذخیره‌شده</h3>
+						<div class="iconbtn" onclick="closeSheet('sheet-addresses')"><svg class="icon"><use href="#i-x"/></svg></div>
+					</div>
+					<div class="sheet-body">
+						<div class="addr-card selected" onclick="selectAddr(this)">
+							<div class="a-radio"></div>
+							<div class="a-body">
+								<div class="a-title"><h4>خانه</h4><span class="badge badge-accent" style="font-size:9px">پیش‌فرض</span></div>
+								<p class="a-text">تهران، سعادت‌آباد، خیابان سرو غربی، پلاک ۱۴</p>
+							</div>
+						</div>
+						<div class="addr-card" onclick="selectAddr(this)">
+							<div class="a-radio"></div>
+							<div class="a-body">
+								<div class="a-title"><h4>محل کار</h4></div>
+								<p class="a-text">تهران، ونک، خیابان ملاصدرا، پلاک ۸۸</p>
+							</div>
+						</div>
+						<button class="addr-add" onclick="showToast('info','آدرس جدید','فرم افزودن آدرس باز می‌شود')"><svg class="icon" style="width:15px;height:15px"><use href="#i-plus"/></svg>افزودن آدرس جدید</button>
+					</div>
+					<div class="sheet-footer">
+						<button class="btn btn-primary btn-block" onclick="closeSheet('sheet-addresses');showToast('success','انتخاب شد','آدرس تحویل به‌روزرسانی شد')">تایید</button>
+					</div>
 				</div>
 			</div>
-			<button class="addr-add" onclick="showToast('info','آدرس جدید','فرم افزودن آدرس باز می‌شود')"><svg class="icon" style="width:15px;height:15px"><use href="#i-plus"/></svg>افزودن آدرس جدید</button>
-		</div>
-		<div class="sheet-footer">
-			<button class="btn btn-primary btn-block" onclick="closeSheet('sheet-addresses');showToast('success','انتخاب شد','آدرس تحویل به‌روزرسانی شد')">تایید</button>
-		</div>
-	</div>
-</div>
 
-<div class="sheet-overlay" id="sheet-notifications" onclick="closeSheetOverlay(event,'sheet-notifications')">
-	<div class="sheet" onclick="event.stopPropagation()">
-		<div class="sheet-handle"></div>
-		<div class="sheet-header">
-			<h3>اعلان‌ها</h3>
-			<div class="iconbtn" onclick="closeSheet('sheet-notifications')"><svg class="icon"><use href="#i-x"/></svg></div>
-		</div>
-		<div class="sheet-body">
-			<p class="sub" style="margin-bottom:14px">نحوه اطلاع‌رسانی درباره سفارش‌ها و پیشنهادها را مشخص کنید</p>
-			<div class="card">
-				<div class="togglerow">
-					<div><h3 class="title" style="font-size:13px">اعلان‌های درون‌برنامه‌ای</h3><p class="sub">وضعیت سفارش و پیام‌های پشتیبانی</p></div>
-					<div class="switch on" onclick="this.classList.toggle('on')"></div>
-				</div>
-				<div class="togglerow">
-					<div><h3 class="title" style="font-size:13px">پیامک (SMS)</h3><p class="sub">اطلاع‌رسانی مراحل مهم سفارش با پیامک</p></div>
-					<div class="switch on" onclick="this.classList.toggle('on')"></div>
-				</div>
-				<div class="togglerow">
-					<div><h3 class="title" style="font-size:13px">پیشنهادها و تخفیف‌ها</h3><p class="sub">اطلاع از تخفیف‌ها و کمپین‌های ویژه</p></div>
-					<div class="switch" onclick="this.classList.toggle('on')"></div>
+			<div class="sheet-overlay" id="sheet-notifications" onclick="closeSheetOverlay(event,'sheet-notifications')">
+				<div class="sheet" onclick="event.stopPropagation()">
+					<div class="sheet-handle"></div>
+					<div class="sheet-header">
+						<h3>اعلان‌ها</h3>
+						<div class="iconbtn" onclick="closeSheet('sheet-notifications')"><svg class="icon"><use href="#i-x"/></svg></div>
+					</div>
+					<div class="sheet-body">
+						<p class="sub" style="margin-bottom:14px">نحوه اطلاع‌رسانی درباره سفارش‌ها و پیشنهادها را مشخص کنید</p>
+						<div class="card">
+							<div class="togglerow">
+								<div><h3 class="title" style="font-size:13px">اعلان‌های درون‌برنامه‌ای</h3><p class="sub">وضعیت سفارش و پیام‌های پشتیبانی</p></div>
+								<div class="switch on" onclick="this.classList.toggle('on')"></div>
+							</div>
+							<div class="togglerow">
+								<div><h3 class="title" style="font-size:13px">پیامک (SMS)</h3><p class="sub">اطلاع‌رسانی مراحل مهم سفارش با پیامک</p></div>
+								<div class="switch on" onclick="this.classList.toggle('on')"></div>
+							</div>
+							<div class="togglerow">
+								<div><h3 class="title" style="font-size:13px">پیشنهادها و تخفیف‌ها</h3><p class="sub">اطلاع از تخفیف‌ها و کمپین‌های ویژه</p></div>
+								<div class="switch" onclick="this.classList.toggle('on')"></div>
+							</div>
+						</div>
+					</div>
+					<div class="sheet-footer">
+						<button class="btn btn-primary btn-block" onclick="closeSheet('sheet-notifications');showToast('success','ذخیره شد','تنظیمات اعلان‌ها به‌روزرسانی شد')">ذخیره تنظیمات</button>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="sheet-footer">
-			<button class="btn btn-primary btn-block" onclick="closeSheet('sheet-notifications');showToast('success','ذخیره شد','تنظیمات اعلان‌ها به‌روزرسانی شد')">ذخیره تنظیمات</button>
+
+			<!-- ===== CONFIRMATION DIALOGS (inside screenwrap) ===== -->
+			<div class="dialog-overlay" id="dialog-exit-center" onclick="closeDialogOverlay(event,'dialog-exit-center')">
+				<div class="dialog" onclick="event.stopPropagation()">
+					<div class="d-icon danger"><svg class="icon"><use href="#i-logout"/></svg></div>
+					<h3>خروج از حساب</h3>
+					<p>آیا مطمئن هستید که می‌خواهید از حساب کاربری خود خارج شوید؟</p>
+					<div class="d-actions">
+						<button class="btn btn-ghost" style="flex:1" onclick="closeDialog('dialog-exit-center')">انصراف</button>
+						<button class="btn btn-danger" style="flex:1" onclick="closeDialog('dialog-exit-center');showToast('info','خروج','شما از حساب خارج شدید')">خروج</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="sheet-overlay" id="dialog-exit-sheet" onclick="closeSheetOverlay(event,'dialog-exit-sheet')">
+				<div class="sheet" onclick="event.stopPropagation()">
+					<div class="sheet-handle"></div>
+					<div class="sheet-body" style="text-align:center;padding:20px 20px 8px">
+						<div class="d-icon danger" style="margin:0 auto 14px"><svg class="icon"><use href="#i-logout"/></svg></div>
+						<h3 style="font-size:16px;font-weight:800;margin:0 0 8px">خروج از برنامه</h3>
+						<p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;line-height:1.7">آیا مطمئن هستید که می‌خواهید از برنامه خارج شوید؟</p>
+					</div>
+					<div class="sheet-footer">
+						<button class="btn btn-ghost" style="flex:1" onclick="closeSheet('dialog-exit-sheet')">انصراف</button>
+						<button class="btn btn-danger" style="flex:1" onclick="closeSheet('dialog-exit-sheet');showToast('info','خروج','برنامه بسته شد')">خروج</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- ===== TOAST CONTAINER (inside screenwrap) ===== -->
+			<div class="toast-container" id="toastContainer"></div>
+
 		</div>
 	</div>
 </div>
-
-<!-- ===== CONFIRMATION DIALOGS ===== -->
-<!-- Centered dialog -->
-<div class="dialog-overlay" id="dialog-exit-center" onclick="closeDialogOverlay(event,'dialog-exit-center')">
-	<div class="dialog" onclick="event.stopPropagation()">
-		<div class="d-icon danger"><svg class="icon"><use href="#i-logout"/></svg></div>
-		<h3>خروج از حساب</h3>
-		<p>آیا مطمئن هستید که می‌خواهید از حساب کاربری خود خارج شوید؟</p>
-		<div class="d-actions">
-			<button class="btn btn-ghost" style="flex:1" onclick="closeDialog('dialog-exit-center')">انصراف</button>
-			<button class="btn btn-danger" style="flex:1" onclick="closeDialog('dialog-exit-center');showToast('info','خروج','شما از حساب خارج شدید')">خروج</button>
-		</div>
-	</div>
-</div>
-
-<!-- Bottom sheet confirmation -->
-<div class="sheet-overlay" id="dialog-exit-sheet" onclick="closeSheetOverlay(event,'dialog-exit-sheet')">
-	<div class="sheet" onclick="event.stopPropagation()">
-		<div class="sheet-handle"></div>
-		<div class="sheet-body" style="text-align:center;padding:20px 20px 8px">
-			<div class="d-icon danger" style="margin:0 auto 14px"><svg class="icon"><use href="#i-logout"/></svg></div>
-			<h3 style="font-size:16px;font-weight:800;margin:0 0 8px">خروج از برنامه</h3>
-			<p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;line-height:1.7">آیا مطمئن هستید که می‌خواهید از برنامه خارج شوید؟</p>
-		</div>
-		<div class="sheet-footer">
-			<button class="btn btn-ghost" style="flex:1" onclick="closeSheet('dialog-exit-sheet')">انصراف</button>
-			<button class="btn btn-danger" style="flex:1" onclick="closeSheet('dialog-exit-sheet');showToast('info','خروج','برنامه بسته شد')">خروج</button>
-		</div>
-	</div>
-</div>
-
-<!-- ===== TOAST CONTAINER ===== -->
-<div class="toast-container" id="toastContainer"></div>
 
 <script>
 	const screens = [
